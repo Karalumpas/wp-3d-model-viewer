@@ -85,14 +85,32 @@ register_deactivation_hook( __FILE__, 'deactivate_wp_3d_model_viewer' );
  */
 $core_file = plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer.php';
 if ( ! file_exists( $core_file ) ) {
-	add_action( 'admin_notices', function() {
+	// Add debug information to help identify the issue
+	add_action( 'admin_notices', function() use ( $core_file ) {
 		echo '<div class="notice notice-error"><p>';
-		echo esc_html__( 'WP 3D Model Viewer Error: Core plugin file is missing. Please reinstall the plugin.', 'wp-3d-model-viewer' );
+		echo '<strong>WP 3D Model Viewer Error:</strong> Core plugin file is missing.<br>';
+		echo 'Expected file: <code>' . esc_html( $core_file ) . '</code><br>';
+		echo 'Plugin directory: <code>' . esc_html( plugin_dir_path( __FILE__ ) ) . '</code><br>';
+		echo 'Please verify all plugin files are uploaded correctly and try reinstalling the plugin.';
+		echo '</p></div>';
+	});
+	
+	// Don't continue if core file is missing
+	return;
+}
+
+// Try to require the core file and handle any errors
+try {
+	require_once $core_file;
+} catch ( Exception $e ) {
+	add_action( 'admin_notices', function() use ( $e ) {
+		echo '<div class="notice notice-error"><p>';
+		echo '<strong>WP 3D Model Viewer Error:</strong> Failed to load core plugin file.<br>';
+		echo 'Error: ' . esc_html( $e->getMessage() );
 		echo '</p></div>';
 	});
 	return;
 }
-require $core_file;
 
 /**
  * Begins execution of the plugin.

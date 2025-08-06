@@ -1,0 +1,375 @@
+/**
+ * WP 3D Model Viewer - Settings Page Styles
+ * Styles specific to the settings/options page
+ */
+
+/* ==========================================================================
+   Settings Page Layout
+   ========================================================================== */
+
+/* Settings sections */
+h2.title {
+	border-bottom: 1px solid var(--wp3d-border);
+	padding-bottom: var(--wp3d-space-lg);
+	margin-bottom: var(--wp3d-space-3xl);
+	color: var(--wp3d-text);
+	font-weight: var(--wp3d-font-weight-medium);
+}
+
+.wp3d-settings-section {
+	margin-bottom: var(--wp3d-space-4xl);
+	padding: var(--wp3d-space-2xl);
+	background: var(--wp3d-bg-white);
+	border: 1px solid var(--wp3d-border-light);
+	border-radius: var(--wp3d-radius);
+	box-shadow: var(--wp3d-shadow-sm);
+}
+
+.wp3d-settings-section h3 {
+	margin-top: 0;
+	margin-bottom: var(--wp3d-space-lg);
+	padding-bottom: var(--wp3d-space-lg);
+	border-bottom: 1px solid var(--wp3d-border-light);
+	color: var(--wp3d-text);
+	font-weight: var(--wp3d-font-weight-medium);
+	font-size: var(--wp3d-font-size-lg);
+}
+
+/* ==========================================================================
+   Fieldsets
+   ========================================================================== */
+
+fieldset {
+	border: 1px solid var(--wp3d-border);
+	border-radius: var(--wp3d-radius);
+	padding: var(--wp3d-space-2xl);
+	margin: var(--wp3d-space-lg) 0;
+	background: var(--wp3d-bg-white);
+}
+
+fieldset legend {
+	padding: 0 var(--wp3d-space-md);
+	font-weight: var(--wp3d-font-weight-medium);
+	color: var(--wp3d-text);
+}
+
+fieldset label {
+	display: block;
+	margin-bottom: var(--wp3d-space-md);
+	padding: var(--wp3d-space-sm) 0;
+	border-bottom: 1px solid var(--wp3d-border-lightest);
+	font-weight: var(--wp3d-font-weight-normal);
+	line-height: var(--wp3d-line-height-normal);
+	cursor: pointer;
+	transition: background-color var(--wp3d-transition);
+}
+
+fieldset label:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
+fieldset label:hover {
+	background-color: var(--wp3d-bg-light);
+	border-radius: var(--wp3d-radius-sm);
+}
+
+fieldset input[type="checkbox"] {
+	margin-right: var(--wp3d-space-md);
+	accent-color: var(--wp3d-primary);
+}
+
+/* ==========================================================================
+   File Type Grid
+   ========================================================================== */
+
+.wp3d-file-types {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: var(--wp3d-space-lg);
+	margin-top: var(--wp3d-space-lg);
+}
+
+.wp3d-file-types label {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--wp3d-space-md);
+	padding: var(--wp3d-space-md);
+	background: var(--wp3d-bg-light);
+	border: 1px solid var(--wp3d-border-light);
+	border-radius: var(--wp3d-radius);
+	transition: all var(--wp3d-transition);
+	border-bottom: 1px solid var(--wp3d-border-light);
+	margin-bottom: 0;
+	cursor: pointer;
+}
+
+.wp3d-file-types label:hover {
+	background: var(--wp3d-bg-lightest);
+	border-color: var(--wp3d-border);
+	transform: translateY(-1px);
+	box-shadow: var(--wp3d-shadow);
+}
+
+.wp3d-file-types input[type="checkbox"] {
+	margin: 0;
+	margin-top: 2px;
+	flex-shrink: 0;
+}
+
+.wp3d-file-type-info {
+	flex: 1;
+}
+
+.wp3d-file-type-name {
+	font-weight: var(--wp3d-font-weight-medium);
+	color: var(--wp3d-text);
+	display: block;
+	margin-bottom: var(--wp3d-space-xs);
+}
+
+.wp3d-file-type-description {
+	font-size: var(--wp3d-font-size-sm);
+	color: var(--wp3d-text-muted);
+	line-height: var(--wp3d-line-height-normal);
+}
+
+.wp3d-file-type-extensions {
+	font-size: var(--wp3d-font-size-xs);
+	color: var(--wp3d-secondary);
+	font-family: var(--wp3d-font-mono);
+	margin-top: var(--wp3d-space-xs);
+}
+
+/* ==========================================================================
+   Help & Documentation Section
+   ========================================================================== */
+
+.wp-3d-model-viewer-help,
+.wp3d-documentation {
+	margin-top: var(--wp3d-space-4xl);
+	padding: var(--wp3d-space-3xl);
+	background: var(--wp3d-bg-light);
+	border: 1px solid var(--wp3d-border-light);
+	border-radius: var(--wp3d-radius);
+	box-shadow: var(--wp3d-shadow-sm);
+}
+
+.wp3d-documentation {
+	border-left: 4px solid var(--wp3d-primary);
+}
+
+.wp-3d-model-viewer-help h2,
+.wp-3d-model-viewer-help h3,
+.wp3d-documentation h2 {
+	margin-top: 0;
+	color: var(--wp3d-text);
+	font-weight: var(--wp3d-font-weight-medium);
+}
+
+.wp3d-documentation h3 {
+	margin-bottom: var(--wp3d-space-lg);
+	color: var(--wp3d-primary);
+	font-size: var(--wp3d-font-size-md);
+	font-weight: var(--wp3d-font-weight-medium);
+}
+
+.wp-3d-model-viewer-help code,
+.wp3d-documentation code {
+	display: block;
+	margin: var(--wp3d-space-sm) 0 var(--wp3d-space-lg) 0;
+	padding: var(--wp3d-space-md) var(--wp3d-space-xl);
+	background: var(--wp3d-bg-white);
+	border: 1px solid var(--wp3d-border);
+	border-radius: var(--wp3d-radius);
+	font-family: var(--wp3d-font-mono);
+	font-size: var(--wp3d-font-size-base);
+	overflow-x: auto;
+	line-height: var(--wp3d-line-height-tight);
+	color: var(--wp3d-text);
+	position: relative;
+}
+
+.wp3d-documentation code::before {
+	content: "📋";
+	position: absolute;
+	top: var(--wp3d-space-sm);
+	right: var(--wp3d-space-sm);
+	opacity: 0.5;
+	cursor: pointer;
+	transition: opacity var(--wp3d-transition);
+}
+
+.wp3d-documentation code:hover::before {
+	opacity: 1;
+}
+
+.wp3d-documentation ul {
+	margin-left: var(--wp3d-space-3xl);
+	line-height: var(--wp3d-line-height-normal);
+}
+
+.wp3d-documentation li {
+	margin-bottom: var(--wp3d-space-sm);
+}
+
+/* ==========================================================================
+   Settings Form Enhancements
+   ========================================================================== */
+
+.wp3d-settings-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: var(--wp3d-space-3xl);
+	margin-top: var(--wp3d-space-3xl);
+}
+
+.wp3d-setting-group {
+	background: var(--wp3d-bg-white);
+	border: 1px solid var(--wp3d-border-light);
+	border-radius: var(--wp3d-radius);
+	padding: var(--wp3d-space-3xl);
+	box-shadow: var(--wp3d-shadow-sm);
+}
+
+.wp3d-setting-group h4 {
+	margin-top: 0;
+	margin-bottom: var(--wp3d-space-lg);
+	color: var(--wp3d-text);
+	font-weight: var(--wp3d-font-weight-medium);
+	font-size: var(--wp3d-font-size-md);
+	border-bottom: 1px solid var(--wp3d-border-lightest);
+	padding-bottom: var(--wp3d-space-sm);
+}
+
+/* Range input with value display */
+.wp3d-range-input {
+	display: flex;
+	align-items: center;
+	gap: var(--wp3d-space-lg);
+}
+
+.wp3d-range-input input[type="range"] {
+	flex: 1;
+}
+
+.wp3d-range-output {
+	min-width: 60px;
+	text-align: center;
+	font-weight: var(--wp3d-font-weight-medium);
+	color: var(--wp3d-primary);
+	font-size: var(--wp3d-font-size-base);
+}
+
+/* Color picker with preview */
+.wp3d-color-input {
+	display: flex;
+	align-items: center;
+	gap: var(--wp3d-space-lg);
+}
+
+.wp3d-color-preview {
+	width: 30px;
+	height: 30px;
+	border: 1px solid var(--wp3d-border);
+	border-radius: var(--wp3d-radius-sm);
+	background: var(--wp3d-bg-white);
+}
+
+.wp3d-color-value {
+	font-family: var(--wp3d-font-mono);
+	font-size: var(--wp3d-font-size-sm);
+	color: var(--wp3d-text-muted);
+	text-transform: uppercase;
+}
+
+/* File size input with unit */
+.wp3d-file-size-input {
+	display: flex;
+	align-items: center;
+	gap: var(--wp3d-space-sm);
+}
+
+.wp3d-file-size-input input[type="number"] {
+	width: var(--wp3d-column-sm);
+}
+
+.wp3d-file-size-unit {
+	font-weight: var(--wp3d-font-weight-medium);
+	color: var(--wp3d-text-muted);
+}
+
+/* Settings tabs (if implemented in future) */
+.wp3d-settings-tabs {
+	border-bottom: 1px solid var(--wp3d-border);
+	margin-bottom: var(--wp3d-space-3xl);
+}
+
+.wp3d-settings-tabs ul {
+	display: flex;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	gap: var(--wp3d-space-md);
+}
+
+.wp3d-settings-tabs li {
+	margin: 0;
+}
+
+.wp3d-settings-tabs a {
+	display: block;
+	padding: var(--wp3d-space-lg) var(--wp3d-space-xl);
+	text-decoration: none;
+	color: var(--wp3d-text-muted);
+	border-bottom: 2px solid transparent;
+	transition: all var(--wp3d-transition);
+}
+
+.wp3d-settings-tabs a:hover,
+.wp3d-settings-tabs a.current {
+	color: var(--wp3d-primary);
+	border-bottom-color: var(--wp3d-primary);
+}
+
+/* ==========================================================================
+   Settings Page Responsive Design
+   ========================================================================== */
+
+@media screen and (max-width: 768px) {
+	.wp3d-file-types {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-settings-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-range-input {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--wp3d-space-sm);
+	}
+	
+	.wp3d-color-input {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	
+	.wp3d-documentation code,
+	.wp-3d-model-viewer-help code {
+		font-size: var(--wp3d-font-size-sm);
+		padding: var(--wp3d-space-md);
+	}
+}
+
+@container (max-width: 600px) {
+	.wp3d-file-types {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-file-types label {
+		flex-direction: column;
+		text-align: center;
+	}
+}

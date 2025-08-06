@@ -1,0 +1,131 @@
+/**
+ * WP 3D Model Viewer - Responsive Utilities
+ * Mobile-first responsive design utilities and breakpoint helpers
+ */
+
+/* ==========================================================================
+   Responsive Utilities
+   ========================================================================== */
+
+/* Hide/show elements at different breakpoints */
+.wp3d-hide-mobile {
+	display: none;
+}
+
+.wp3d-hide-tablet,
+.wp3d-hide-desktop {
+	display: block;
+}
+
+@media screen and (min-width: 768px) {
+	.wp3d-hide-mobile {
+		display: block;
+	}
+	
+	.wp3d-hide-tablet {
+		display: none;
+	}
+	
+	.wp3d-show-tablet {
+		display: block;
+	}
+}
+
+@media screen and (min-width: 1024px) {
+	.wp3d-hide-desktop {
+		display: none;
+	}
+	
+	.wp3d-show-desktop {
+		display: block;
+	}
+}
+
+/* Responsive text alignment */
+.wp3d-text-center-mobile {
+	text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+	.wp3d-text-left-tablet {
+		text-align: left;
+	}
+	
+	.wp3d-text-center-tablet {
+		text-align: center;
+	}
+	
+	.wp3d-text-right-tablet {
+		text-align: right;
+	}
+}
+
+@media screen and (min-width: 1024px) {
+	.wp3d-text-left-desktop {
+		text-align: left;
+	}
+	
+	.wp3d-text-center-desktop {
+		text-align: center;
+	}
+	
+	.wp3d-text-right-desktop {
+		text-align: right;
+	}
+}
+
+/* Responsive spacing */
+.wp3d-spacing-mobile {
+	margin: var(--wp3d-space-lg);
+	padding: var(--wp3d-space-lg);
+}
+
+@media screen and (min-width: 768px) {
+	.wp3d-spacing-tablet {
+		margin: var(--wp3d-space-2xl);
+		padding: var(--wp3d-space-2xl);
+	}
+}
+
+@media screen and (min-width: 1024px) {
+	.wp3d-spacing-desktop {
+		margin: var(--wp3d-space-3xl);
+		padding: var(--wp3d-space-3xl);
+	}
+}
+
+/* Container queries for modern browsers */
+@supports (container-type: inline-size) {
+	.wp3d-container {
+		container-type: inline-size;
+	}
+	
+	/* Adjust layout when container is small */
+	@container (max-width: 400px) {
+		.wp3d-container .wp3d-grid {
+			grid-template-columns: 1fr;
+		}
+		
+		.wp3d-container .wp3d-file-type-card {
+			padding: var(--wp3d-space-md);
+		}
+		
+		.wp3d-container .wp3d-button {
+			width: 100%;
+		}
+	}
+	
+	/* Adjust layout when container is medium */
+	@container (min-width: 401px) and (max-width: 800px) {
+		.wp3d-container .wp3d-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	
+	/* Full layout when container is large */
+	@container (min-width: 801px) {
+		.wp3d-container .wp3d-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+}

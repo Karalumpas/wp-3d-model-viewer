@@ -1,61 +1,621 @@
 /**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
+ * WP 3D Model Viewer - Main Admin Styles
+ * Entry point for all admin CSS modules
+ * 
+ * Build System: PostCSS with autoprefixer, cssnano, and modern CSS processing
+ * Architecture: Modular CSS with design tokens and component separation
+ * 
+ * @package WP_3D_Model_Viewer
+ * @version 2.0.0
  */
 
-/* Settings Page Styles */
-.wp-3d-model-viewer-help {
-	margin-top: 30px;
+/* ==========================================================================
+   CSS Imports - Order matters for cascade
+   ========================================================================== */
+
+/* Design tokens and CSS custom properties */
+
+/**
+ * WP 3D Model Viewer - CSS Variables
+ * Shared design tokens and custom properties
+ */
+
+:root {
+	/* Colors */
+	--wp3d-primary: #0073aa;
+	--wp3d-primary-hover: #005a87;
+	--wp3d-secondary: #646970;
+	--wp3d-text: #23282d;
+	--wp3d-text-muted: #666666;
+	--wp3d-success: #46b450;
+	--wp3d-warning: #ffb900;
+	--wp3d-error: #dc3232;
+	--wp3d-error-hover: #a00;
+	--wp3d-info: #00a0d2;
+	
+	/* Backgrounds */
+	--wp3d-bg-white: #ffffff;
+	--wp3d-bg-light: #f9f9f9;
+	--wp3d-bg-lighter: #f1f1f1;
+	--wp3d-bg-lightest: #f0f0f0;
+	--wp3d-bg-hover: #e6e6e6;
+	--wp3d-bg-subtle: #e0e0e0;
+	
+	/* Borders */
+	--wp3d-border: #ddd;
+	--wp3d-border-light: #e5e5e5;
+	--wp3d-border-lightest: #f0f0f0;
+	
+	/* Spacing */
+	--wp3d-space-xs: 3px;
+	--wp3d-space-sm: 5px;
+	--wp3d-space-md: 8px;
+	--wp3d-space-lg: 10px;
+	--wp3d-space-xl: 12px;
+	--wp3d-space-2xl: 15px;
+	--wp3d-space-3xl: 20px;
+	--wp3d-space-4xl: 30px;
+	--wp3d-space-5xl: 40px;
+	
+	/* Typography */
+	--wp3d-font-mono: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	--wp3d-font-size-xs: 11px;
+	--wp3d-font-size-sm: 12px;
+	--wp3d-font-size-base: 13px;
+	--wp3d-font-size-md: 14px;
+	--wp3d-font-size-lg: 16px;
+	--wp3d-font-size-xl: 18px;
+	--wp3d-font-weight-normal: 400;
+	--wp3d-font-weight-medium: 500;
+	--wp3d-font-weight-bold: 600;
+	--wp3d-line-height-tight: 1.2;
+	--wp3d-line-height-normal: 1.5;
+	--wp3d-line-height-loose: 1.7;
+	
+	/* Borders & Radius */
+	--wp3d-radius-sm: 3px;
+	--wp3d-radius: 4px;
+	--wp3d-radius-md: 6px;
+	--wp3d-radius-lg: 8px;
+	--wp3d-radius-xl: 12px;
+	--wp3d-radius-full: 50%;
+	--wp3d-radius-toggle: 24px;
+	
+	/* Sizing */
+	--wp3d-column-xs: 60px;
+	--wp3d-column-sm: 80px;
+	--wp3d-column-md: 150px;
+	--wp3d-column-lg: 200px;
+	--wp3d-column-xl: 250px;
+	--wp3d-input-height: 30px;
+	--wp3d-input-height-sm: 28px;
+	--wp3d-input-height-lg: 32px;
+	--wp3d-input-height-xl: 36px;
+	--wp3d-preview-xs: 40px;
+	--wp3d-preview-sm: 60px;
+	--wp3d-preview-md: 150px;
+	--wp3d-preview-lg: 200px;
+	--wp3d-preview-xl: 300px;
+	
+	/* Shadows */
+	--wp3d-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+	--wp3d-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	--wp3d-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	--wp3d-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	
+	/* Transitions */
+	--wp3d-transition-fast: 0.15s ease;
+	--wp3d-transition: 0.2s ease;
+	--wp3d-transition-slow: 0.3s ease;
+	--wp3d-transition-slower: 0.4s ease;
+	
+	/* Z-index scale */
+	--wp3d-z-dropdown: 1000;
+	--wp3d-z-sticky: 1020;
+	--wp3d-z-fixed: 1030;
+	--wp3d-z-modal-backdrop: 1040;
+	--wp3d-z-modal: 1050;
+	--wp3d-z-popover: 1060;
+	--wp3d-z-tooltip: 1070;
+	
+	/* Grid & Layout */
+	--wp3d-grid-gap: var(--wp3d-space-lg);
+	--wp3d-grid-gap-lg: var(--wp3d-space-3xl);
+	--wp3d-container-max-width: 1200px;
+	--wp3d-sidebar-width: 280px;
+	
+	/* Breakpoints (for container queries) */
+	--wp3d-breakpoint-sm: 576px;
+	--wp3d-breakpoint-md: 768px;
+	--wp3d-breakpoint-lg: 992px;
+	--wp3d-breakpoint-xl: 1200px;
+}
+
+/* Dark mode support (if needed in future) */
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		/* Override colors for dark mode */
+		--wp3d-text: #e2e8f0;
+		--wp3d-text-muted: #a0aec0;
+		--wp3d-bg-white: #1a202c;
+		--wp3d-bg-light: #2d3748;
+		--wp3d-bg-lighter: #4a5568;
+		--wp3d-border: #4a5568;
+		--wp3d-border-light: #2d3748;
+	}
+}
+
+/* Reduced motion preference */
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--wp3d-transition-fast: 0s;
+		--wp3d-transition: 0s;
+		--wp3d-transition-slow: 0s;
+		--wp3d-transition-slower: 0s;
+	}
+}
+
+/* Base styles, resets, and global utilities */
+
+/**
+ * WP 3D Model Viewer - Global Admin Styles
+ * Base styles, form elements, and common components
+ */
+
+/* ==========================================================================
+   Base & Layout Components
+   ========================================================================== */
+
+/* Form Tables - Consolidated styles */
+
+.form-table,
+.wp-3d-model-viewer-admin .form-table,
+.wp-3d-model-viewer-metabox .form-table {
+	margin-top: 10px;
+}
+
+.form-table th,
+.wp-3d-model-viewer-admin .form-table th,
+.wp-3d-model-viewer-metabox .form-table th {
+	width: 200px;
+	padding-left: 10px;
+	font-weight: 500;
+}
+
+.form-table td,
+.wp-3d-model-viewer-admin .form-table td,
+.wp-3d-model-viewer-metabox .form-table td {
+	vertical-align: top;
+	padding-top: 15px;
+	padding-left: 10px;
+}
+
+.form-table .description,
+.wp-3d-model-viewer-admin .description {
+	margin-top: 5px;
+	font-style: italic;
+	color: #666666;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+/* Main admin container */
+
+.wp-3d-model-viewer-admin {
 	padding: 20px;
-	background: #f9f9f9;
-	border: 1px solid #e5e5e5;
-	border-radius: 4px;
+	max-width: 1200px;
 }
 
-.wp-3d-model-viewer-help h2,
-.wp-3d-model-viewer-help h3 {
-	margin-top: 0;
-	color: #23282d;
-}
+/* ==========================================================================
+   Form Elements
+   ========================================================================== */
 
-.wp-3d-model-viewer-help code {
-	display: block;
-	margin: 5px 0 10px 0;
-	padding: 8px 12px;
-	background: #fff;
+/* Input base styles */
+
+input[type="text"],
+input[type="url"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
 	border: 1px solid #ddd;
 	border-radius: 3px;
-	font-family: Monaco, Consolas, 'Lucida Console', monospace;
+	padding: 5px 8px;
 	font-size: 13px;
+	transition: border-color 0.2s ease;
 }
 
-/* Color picker styling */
+input[type="text"]:focus, input[type="url"]:focus, input[type="email"]:focus, input[type="number"]:focus, textarea:focus, select:focus {
+		border-color: #0073aa;
+		box-shadow: 0 0 0 1px #0073aa;
+		outline: none;
+	}
+
+/* Color picker */
+
 input[type="color"] {
-	width: 60px;
-	height: 32px;
+	width: 50px;
+	height: 30px;
 	border: 1px solid #ddd;
 	border-radius: 3px;
 	cursor: pointer;
+	padding: 0;
 }
 
-/* Range slider styling */
+input[type="color"]::-webkit-color-swatch {
+		border: none;
+		border-radius: 2px;
+	}
+
+input[type="color"]::-moz-color-swatch {
+		border: none;
+		border-radius: 2px;
+	}
+
+/* Range slider */
+
 input[type="range"] {
 	width: 200px;
 	margin-right: 10px;
+	height: 6px;
+	background: #f1f1f1;
+	border-radius: 3px;
+	outline: none;
 }
 
-.zoom-display {
-	font-weight: bold;
+input[type="range"]::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		        appearance: none;
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background: #0073aa;
+		cursor: pointer;
+		border: 2px solid #ffffff;
+		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	}
+
+input[type="range"]::-moz-range-thumb {
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background: #0073aa;
+		cursor: pointer;
+		border: 2px solid #ffffff;
+		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	}
+
+/* Number inputs */
+
+input[type="number"] {
+	width: 100px;
+}
+
+input[type="number"].small-text {
+		width: 80px;
+	}
+
+input[type="number"].large-text {
+		width: 150px;
+	}
+
+/* Select dropdowns */
+
+select {
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23666' d='m2 0-2 2h4zm0 5 2-2h-4z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 8px center;
+	background-size: 12px;
+	padding-right: 30px;
+	-webkit-appearance: none;
+	   -moz-appearance: none;
+	        appearance: none;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.wp3d-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #ffffff;
+	color: #23282d;
+	font-size: 13px;
+	font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.wp3d-button:hover {
+		background: #e6e6e6;
+		border-color: #ddd;
+		color: #23282d;
+	}
+
+.wp3d-button.wp3d-button--primary {
+		background: #0073aa;
+		border-color: #0073aa;
+		color: #ffffff;
+	}
+
+.wp3d-button.wp3d-button--primary:hover {
+			background: #005a87;
+			border-color: #005a87;
+			color: #ffffff;
+		}
+
+.wp3d-button.wp3d-button--danger {
+		background: #dc3232;
+		border-color: #dc3232;
+		color: #ffffff;
+	}
+
+.wp3d-button.wp3d-button--danger:hover {
+			background: #a00;
+			border-color: #a00;
+			color: #ffffff;
+		}
+
+.wp3d-button.wp3d-button--small {
+		padding: 5px 8px;
+		font-size: 12px;
+	}
+
+.wp3d-button.wp3d-button--large {
+		padding: 10px 20px;
+		font-size: 14px;
+	}
+
+.wp3d-button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+.wp3d-button:disabled:hover {
+			background: #ffffff;
+			border-color: #ddd;
+		}
+
+/* Legacy button compatibility */
+
+.media-upload-button,
+.wp3d-upload-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #ffffff;
+	color: #23282d;
+	font-size: 13px;
+	font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-left: 10px;
+}
+
+.wp3d-upload-button {
+	margin-right: 10px;
+	margin-left: 0;
+}
+
+.remove-model,
+.wp3d-remove-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 5px 8px;
+	border: 1px solid #dc3232;
+	border-radius: 4px;
+	background: #dc3232;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 500;
+	text-decoration: none;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.remove-model:hover,
+.wp3d-remove-button:hover {
+	background: #a00;
+	border-color: #a00;
+	color: #ffffff;
+}
+
+/* ==========================================================================
+   Zoom Display
+   ========================================================================== */
+
+.zoom-display,
+.wp3d-zoom-value {
+	font-weight: 600;
 	color: #0073aa;
 	font-size: 14px;
+	margin-left: 10px;
 }
 
-/* MIME types fieldset styling */
+.zoom-display::after, .wp3d-zoom-value::after {
+		content: "x";
+		margin-left: 1px;
+		opacity: 0.7;
+	}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+
+.wp3d-loading {
+	position: relative;
+}
+
+.wp3d-loading::after {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 20px;
+		height: 20px;
+		border: 2px solid #e5e5e5;
+		border-top: 2px solid #0073aa;
+		border-radius: 50%;
+		animation: wp3d-spin 1s linear infinite;
+	}
+
+@keyframes wp3d-spin {
+	0% { transform: translate(-50%, -50%) rotate(0deg); }
+	100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==========================================================================
+   Notices
+   ========================================================================== */
+
+.wp3d-notice {
+	padding: 12px;
+	margin: 5px 0 15px;
+	border-left: 4px solid #00a0d2;
+	background: #ffffff;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	border-radius: 4px;
+}
+
+.wp3d-notice.error {
+		border-left-color: #dc3232;
+	}
+
+.wp3d-notice.success {
+		border-left-color: #46b450;
+	}
+
+.wp3d-notice.warning {
+		border-left-color: #ffb900;
+	}
+
+.wp3d-notice p {
+		margin: 0;
+		line-height: 1.5;
+	}
+
+/* ==========================================================================
+   Utilities
+   ========================================================================== */
+
+.wp3d-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.wp3d-text-center { text-align: center; }
+
+.wp3d-text-right { text-align: right; }
+
+.wp3d-text-muted { color: #666666; }
+
+.wp3d-text-primary { color: #0073aa; }
+
+.wp3d-text-success { color: #46b450; }
+
+.wp3d-text-warning { color: #ffb900; }
+
+.wp3d-text-error { color: #dc3232; }
+
+.wp3d-mb-0 { margin-bottom: 0; }
+
+.wp3d-mb-sm { margin-bottom: 5px; }
+
+.wp3d-mb-md { margin-bottom: 8px; }
+
+.wp3d-mb-lg { margin-bottom: 10px; }
+
+.wp3d-mb-xl { margin-bottom: 12px; }
+
+.wp3d-mt-0 { margin-top: 0; }
+
+.wp3d-mt-sm { margin-top: 5px; }
+
+.wp3d-mt-md { margin-top: 8px; }
+
+.wp3d-mt-lg { margin-top: 10px; }
+
+.wp3d-mt-xl { margin-top: 12px; }
+
+/* Plugin settings page specific styles */
+
+/**
+ * WP 3D Model Viewer - Settings Page Styles
+ * Styles specific to the settings/options page
+ */
+
+/* ==========================================================================
+   Settings Page Layout
+   ========================================================================== */
+
+/* Settings sections */
+
+h2.title {
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	color: #23282d;
+	font-weight: 500;
+}
+
+.wp3d-settings-section {
+	margin-bottom: 30px;
+	padding: 15px;
+	background: #ffffff;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.wp3d-settings-section h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #e5e5e5;
+	color: #23282d;
+	font-weight: 500;
+	font-size: 16px;
+}
+
+/* ==========================================================================
+   Fieldsets
+   ========================================================================== */
+
 fieldset {
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	padding: 15px;
 	margin: 10px 0;
+	background: #ffffff;
+}
+
+fieldset legend {
+	padding: 0 8px;
+	font-weight: 500;
+	color: #23282d;
 }
 
 fieldset label {
@@ -63,6 +623,10 @@ fieldset label {
 	margin-bottom: 8px;
 	padding: 5px 0;
 	border-bottom: 1px solid #f0f0f0;
+	font-weight: 400;
+	line-height: 1.5;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
 }
 
 fieldset label:last-child {
@@ -70,117 +634,702 @@ fieldset label:last-child {
 	margin-bottom: 0;
 }
 
+fieldset label:hover {
+	background-color: #f9f9f9;
+	border-radius: 3px;
+}
+
 fieldset input[type="checkbox"] {
 	margin-right: 8px;
+	accent-color: #0073aa;
 }
 
-/* Settings form styling */
-.form-table th {
-	width: 200px;
+/* ==========================================================================
+   File Type Grid
+   ========================================================================== */
+
+.wp3d-file-types {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 10px;
+	margin-top: 10px;
 }
 
-.form-table td {
-	vertical-align: top;
-	padding-top: 15px;
-}
-
-.form-table .description {
-	margin-top: 5px;
-	font-style: italic;
-	color: #666;
-}
-
-/* Number input styling */
-input[type="number"].small-text {
-	width: 80px;
-}
-
-/* Settings sections */
-h2.title {
-	border-bottom: 1px solid #ddd;
-	padding-bottom: 10px;
-	margin-bottom: 20px;
-}
-
-/* Admin columns for CPT */
-.column-thumbnail {
-	width: 80px;
-}
-
-.column-shortcode {
-	width: 200px;
-}
-
-.model-thumbnail {
-	max-width: 60px;
-	max-height: 60px;
-	border-radius: 3px;
-	border: 1px solid #ddd;
-}
-
-.shortcode-display {
-	font-family: Monaco, Consolas, 'Lucida Console', monospace;
-	font-size: 11px;
-	background: #f0f0f0;
-	padding: 3px 6px;
-	border-radius: 3px;
-	color: #0073aa;
+.wp3d-file-types label {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 8px;
+	background: #f9f9f9;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+	border-bottom: 1px solid #e5e5e5;
+	margin-bottom: 0;
 	cursor: pointer;
 }
 
-.shortcode-display:hover {
-	background: #e0e0e0;
+.wp3d-file-types label:hover {
+	background: #f0f0f0;
+	border-color: #ddd;
+	transform: translateY(-1px);
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
-/* Metabox styling */
+.wp3d-file-types input[type="checkbox"] {
+	margin: 0;
+	margin-top: 2px;
+	flex-shrink: 0;
+}
+
+.wp3d-file-type-info {
+	flex: 1;
+}
+
+.wp3d-file-type-name {
+	font-weight: 500;
+	color: #23282d;
+	display: block;
+	margin-bottom: 3px;
+}
+
+.wp3d-file-type-description {
+	font-size: 12px;
+	color: #666666;
+	line-height: 1.5;
+}
+
+.wp3d-file-type-extensions {
+	font-size: 11px;
+	color: #646970;
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	margin-top: 3px;
+}
+
+/* ==========================================================================
+   Help & Documentation Section
+   ========================================================================== */
+
+.wp-3d-model-viewer-help,
+.wp3d-documentation {
+	margin-top: 30px;
+	padding: 20px;
+	background: #f9f9f9;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.wp3d-documentation {
+	border-left: 4px solid #0073aa;
+}
+
+.wp-3d-model-viewer-help h2,
+.wp-3d-model-viewer-help h3,
+.wp3d-documentation h2 {
+	margin-top: 0;
+	color: #23282d;
+	font-weight: 500;
+}
+
+.wp3d-documentation h3 {
+	margin-bottom: 10px;
+	color: #0073aa;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.wp-3d-model-viewer-help code,
+.wp3d-documentation code {
+	display: block;
+	margin: 5px 0 10px 0;
+	padding: 8px 12px;
+	background: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	font-size: 13px;
+	overflow-x: auto;
+	line-height: 1.2;
+	color: #23282d;
+	position: relative;
+}
+
+.wp3d-documentation code::before {
+	content: "📋";
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	opacity: 0.5;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+.wp3d-documentation code:hover::before {
+	opacity: 1;
+}
+
+.wp3d-documentation ul {
+	margin-left: 20px;
+	line-height: 1.5;
+}
+
+.wp3d-documentation li {
+	margin-bottom: 5px;
+}
+
+/* ==========================================================================
+   Settings Form Enhancements
+   ========================================================================== */
+
+.wp3d-settings-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.wp3d-setting-group {
+	background: #ffffff;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	padding: 20px;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.wp3d-setting-group h4 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #23282d;
+	font-weight: 500;
+	font-size: 14px;
+	border-bottom: 1px solid #f0f0f0;
+	padding-bottom: 5px;
+}
+
+/* Range input with value display */
+
+.wp3d-range-input {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wp3d-range-input input[type="range"] {
+	flex: 1;
+}
+
+.wp3d-range-output {
+	min-width: 60px;
+	text-align: center;
+	font-weight: 500;
+	color: #0073aa;
+	font-size: 13px;
+}
+
+/* Color picker with preview */
+
+.wp3d-color-input {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wp3d-color-preview {
+	width: 30px;
+	height: 30px;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	background: #ffffff;
+}
+
+.wp3d-color-value {
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	font-size: 12px;
+	color: #666666;
+	text-transform: uppercase;
+}
+
+/* File size input with unit */
+
+.wp3d-file-size-input {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.wp3d-file-size-input input[type="number"] {
+	width: 80px;
+}
+
+.wp3d-file-size-unit {
+	font-weight: 500;
+	color: #666666;
+}
+
+/* Settings tabs (if implemented in future) */
+
+.wp3d-settings-tabs {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 20px;
+}
+
+.wp3d-settings-tabs ul {
+	display: flex;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	gap: 8px;
+}
+
+.wp3d-settings-tabs li {
+	margin: 0;
+}
+
+.wp3d-settings-tabs a {
+	display: block;
+	padding: 10px 12px;
+	text-decoration: none;
+	color: #666666;
+	border-bottom: 2px solid transparent;
+	transition: all 0.2s ease;
+}
+
+.wp3d-settings-tabs a:hover,
+.wp3d-settings-tabs a.current {
+	color: #0073aa;
+	border-bottom-color: #0073aa;
+}
+
+/* ==========================================================================
+   Settings Page Responsive Design
+   ========================================================================== */
+
+@media screen and (max-width: 768px) {
+	.wp3d-file-types {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-settings-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-range-input {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 5px;
+	}
+	
+	.wp3d-color-input {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	
+	.wp3d-documentation code,
+	.wp-3d-model-viewer-help code {
+		font-size: 12px;
+		padding: 8px;
+	}
+}
+
+@container (max-width: 600px) {
+	.wp3d-file-types {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-file-types label {
+		flex-direction: column;
+		text-align: center;
+	}
+}
+
+/* Custom Post Type (3D Models) admin interface */
+
+/**
+ * WP 3D Model Viewer - Custom Post Type Styles
+ * Styles for 3D Model CPT admin interface, metaboxes, and list tables
+ */
+
+/* ==========================================================================
+   Post Type List Table
+   ========================================================================== */
+
+/* Admin columns */
+
+.column-thumbnail,
+.wp-list-table .column-thumbnail {
+	width: 80px;
+	text-align: center;
+}
+
+.column-shortcode,
+.wp-list-table .column-shortcode {
+	width: 200px;
+}
+
+.column-file-size {
+	width: 60px;
+	text-align: center;
+}
+
+.column-ar-support {
+	width: 60px;
+	text-align: center;
+}
+
+/* Thumbnails */
+
+.model-thumbnail,
+.post-type-3d_model .wp3d-file-preview img {
+	max-width: 60px;
+	max-height: 60px;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+	background: #f9f9f9;
+	-o-object-fit: cover;
+	   object-fit: cover;
+	transition: transform 0.2s ease;
+}
+
+.model-thumbnail:hover,
+.post-type-3d_model .wp3d-file-preview img:hover {
+	transform: scale(1.05);
+	border-color: #0073aa;
+}
+
+.post-type-3d_model .wp3d-file-preview img {
+	max-width: 150px;
+	max-height: 150px;
+}
+
+/* Shortcode displays */
+
+.shortcode-display,
+.wp-list-table .column-shortcode code {
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	font-size: 11px;
+	background: #f0f0f0;
+	padding: 3px 5px;
+	border-radius: 3px;
+	color: #0073aa;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 1px solid transparent;
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+}
+
+.shortcode-display:hover,
+.wp-list-table .column-shortcode code:hover,
+.post-type-3d_model .wp3d-shortcode-copy:hover {
+	background: #e0e0e0;
+	border-color: #ddd;
+	transform: translateY(-1px);
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.shortcode-display::after,
+.wp-list-table .column-shortcode code::after {
+	content: "📋";
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+
+.shortcode-display:hover::after,
+.wp-list-table .column-shortcode code:hover::after {
+	opacity: 1;
+}
+
+/* File info badges */
+
+.wp3d-file-info {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.wp3d-file-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	padding: 3px 5px;
+	background: #f9f9f9;
+	border: 1px solid #e5e5e5;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 500;
+	color: #666666;
+}
+
+.wp3d-file-badge--size {
+	background: #00a0d2;
+	color: #ffffff;
+	border-color: #00a0d2;
+}
+
+.wp3d-file-badge--ar {
+	background: #46b450;
+	color: #ffffff;
+	border-color: #46b450;
+}
+
+.wp3d-file-badge--format {
+	background: #ffb900;
+	color: #ffffff;
+	border-color: #ffb900;
+}
+
+/* ==========================================================================
+   Metaboxes
+   ========================================================================== */
+
 .wp-3d-model-viewer-metabox {
 	padding: 15px;
-}
-
-.wp-3d-model-viewer-metabox .form-table {
-	margin-top: 10px;
+	background: #ffffff;
 }
 
 .wp-3d-model-viewer-metabox .form-table th {
 	padding-left: 0;
 	width: 150px;
+	font-weight: 500;
+	color: #23282d;
 }
 
 .wp-3d-model-viewer-metabox .form-table td {
 	padding-left: 10px;
 }
 
-.media-upload-button {
-	margin-left: 10px;
-}
+/* Model preview */
 
 .model-preview {
 	margin-top: 10px;
-	padding: 10px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	padding: 20px;
+	border: 2px dashed #ddd;
+	border-radius: 8px;
 	background: #f9f9f9;
 	text-align: center;
+	transition: all 0.2s ease;
+	position: relative;
+	min-height: 200px;
 }
 
-.model-preview img {
+.model-preview:hover {
+	border-color: #0073aa;
+	background: #f0f0f0;
+}
+
+.model-preview.has-model {
+	border-style: solid;
+	border-color: #46b450;
+	background: #ffffff;
+}
+
+.model-preview img,
+.model-preview video {
 	max-width: 200px;
 	max-height: 150px;
-	border-radius: 3px;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
-.remove-model {
-	margin-top: 5px;
-	color: #a00;
-	text-decoration: none;
+.model-preview-placeholder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	color: #666666;
+	font-size: 14px;
+}
+
+.model-preview-icon {
+	font-size: 18px;
+	opacity: 0.5;
+}
+
+/* File upload area */
+
+.wp3d-file-upload {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.wp3d-file-input-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.wp3d-file-input {
+	position: absolute;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+}
+
+.wp3d-file-input-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 8px 12px;
+	background: #0073aa;
+	color: #ffffff;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	font-weight: 500;
+}
+
+.wp3d-file-input-label:hover {
+	background: #005a87;
+	transform: translateY(-1px);
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.wp3d-file-input-label::before {
+	content: "📁";
+}
+
+/* File info display */
+
+.wp3d-file-info-display {
+	background: #f9f9f9;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+.wp3d-file-info-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+}
+
+.wp3d-file-info-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 5px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.wp3d-file-info-item:last-child {
+	border-bottom: none;
+}
+
+.wp3d-file-info-label {
+	font-weight: 500;
+	color: #23282d;
+}
+
+.wp3d-file-info-value {
+	color: #666666;
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
 	font-size: 12px;
 }
 
-.remove-model:hover {
-	color: #dc3232;
+/* Post type specific styles */
+
+.post-type-3d_model .wp3d-shortcode-usage {
+	background: #f9f9f9;
+	padding: 15px;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+	margin-top: 10px;
 }
 
-/* Toggle switches for checkboxes */
+.post-type-3d_model .wp3d-shortcode-copy {
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	padding: 5px;
+	border-radius: 3px;
+}
+
+.post-type-3d_model .wp3d-file-preview p {
+	margin: 5px 0;
+	line-height: 1.5;
+}
+
+.post-type-3d_model .wp3d-file-preview small {
+	color: #666666;
+	word-break: break-all;
+	font-size: 11px;
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+}
+
+/* ==========================================================================
+   Model Settings Controls
+   ========================================================================== */
+
+.wp3d-model-settings {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.wp3d-setting-group {
+	background: #ffffff;
+	border: 1px solid #e5e5e5;
+	border-radius: 4px;
+	padding: 15px;
+}
+
+.wp3d-setting-group h4 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #23282d;
+	font-weight: 500;
+	border-bottom: 1px solid #f0f0f0;
+	padding-bottom: 5px;
+}
+
+/* Color picker for background */
+
+.wp3d-color-picker-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.wp3d-color-preview {
+	width: 40px;
+	height: 40px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #ffffff;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Toggle switches for boolean settings */
+
+.wp3d-toggle-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+}
+
+.wp3d-toggle-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px;
+	background: #f9f9f9;
+	border-radius: 4px;
+	border: 1px solid #e5e5e5;
+}
+
+.wp3d-toggle-label {
+	font-weight: 500;
+	color: #23282d;
+}
+
+/* ==========================================================================
+   Toggle Switches
+   ========================================================================== */
+
 .toggle-switch {
 	position: relative;
 	display: inline-block;
@@ -202,9 +1351,10 @@ h2.title {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #ccc;
-	transition: .4s;
+	background-color: #ddd;
+	transition: 0.3s ease;
 	border-radius: 24px;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-slider:before {
@@ -214,243 +1364,466 @@ h2.title {
 	width: 18px;
 	left: 3px;
 	bottom: 3px;
-	background-color: white;
-	transition: .4s;
+	background-color: #ffffff;
+	transition: 0.3s ease;
 	border-radius: 50%;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 input:checked + .toggle-slider {
 	background-color: #0073aa;
 }
 
+input:focus + .toggle-slider {
+	box-shadow: 0 0 0 2px #0073aa, inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 input:checked + .toggle-slider:before {
 	transform: translateX(26px);
 }
 
-/* Responsive adjustments */
-@media screen and (max-width: 782px) {
-	.form-table th,
-	.form-table td {
+/* Toggle switch with labels */
+
+.toggle-switch-labeled {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.toggle-switch-labels {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 12px;
+	color: #666666;
+}
+
+.toggle-switch-labels .off {
+	opacity: 1;
+	transition: opacity 0.2s ease;
+}
+
+.toggle-switch-labels .on {
+	opacity: 0.5;
+	transition: opacity 0.2s ease;
+}
+
+input:checked ~ .toggle-switch-labels .off {
+	opacity: 0.5;
+}
+
+input:checked ~ .toggle-switch-labels .on {
+	opacity: 1;
+	color: #0073aa;
+}
+
+/* ==========================================================================
+   CPT Responsive Design
+   ========================================================================== */
+
+@media screen and (max-width: 1024px) {
+	.wp3d-model-settings {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-toggle-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.wp3d-file-info-grid {
+		grid-template-columns: 1fr;
+	}
+	
+	.wp3d-color-picker-wrapper {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	
+	.model-preview {
+		padding: 12px;
+		min-height: 150px;
+	}
+	
+	.wp3d-toggle-item {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 5px;
+	}
+}
+
+/* ==========================================================================
+   Drag & Drop Enhancement
+   ========================================================================== */
+
+.wp3d-drop-zone {
+	position: relative;
+	transition: all 0.2s ease;
+}
+
+.wp3d-drop-zone.dragover {
+	border-color: #0073aa;
+	background: #f0f0f0;
+	transform: scale(1.02);
+}
+
+.wp3d-drop-zone.dragover::after {
+	content: "Drop your 3D model file here";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: #0073aa;
+	color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 4px;
+	font-weight: 500;
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	z-index: 1050;
+}
+
+/* Responsive utilities and breakpoint helpers */
+
+/**
+ * WP 3D Model Viewer - Responsive Utilities
+ * Mobile-first responsive design utilities and breakpoint helpers
+ */
+
+/* ==========================================================================
+   Responsive Utilities
+   ========================================================================== */
+
+/* Hide/show elements at different breakpoints */
+
+.wp3d-hide-mobile {
+	display: none;
+}
+
+.wp3d-hide-tablet,
+.wp3d-hide-desktop {
+	display: block;
+}
+
+@media screen and (min-width: 768px) {
+	.wp3d-hide-mobile {
 		display: block;
-		width: 100%;
-		padding: 10px 0;
 	}
 	
-	.wp-3d-model-viewer-metabox .form-table th {
-		width: 100%;
+	.wp3d-hide-tablet {
+		display: none;
 	}
 	
-	input[type="range"] {
-		width: 100%;
-		max-width: 300px;
+	.wp3d-show-tablet {
+		display: block;
 	}
 }
 
-.wp-3d-model-viewer-admin {
-    padding: 20px;
+@media screen and (min-width: 1024px) {
+	.wp3d-hide-desktop {
+		display: none;
+	}
+	
+	.wp3d-show-desktop {
+		display: block;
+	}
 }
 
-.wp-3d-model-viewer-admin .form-table th {
-    width: 200px;
-    padding-left: 10px;
+/* Responsive text alignment */
+
+.wp3d-text-center-mobile {
+	text-align: center;
 }
 
-.wp-3d-model-viewer-admin .form-table td {
-    padding-left: 10px;
+@media screen and (min-width: 768px) {
+	.wp3d-text-left-tablet {
+		text-align: left;
+	}
+	
+	.wp3d-text-center-tablet {
+		text-align: center;
+	}
+	
+	.wp3d-text-right-tablet {
+		text-align: right;
+	}
 }
 
-.wp-3d-model-viewer-admin .description {
-    font-style: italic;
-    color: #666;
-    margin-top: 5px;
+@media screen and (min-width: 1024px) {
+	.wp3d-text-left-desktop {
+		text-align: left;
+	}
+	
+	.wp3d-text-center-desktop {
+		text-align: center;
+	}
+	
+	.wp3d-text-right-desktop {
+		text-align: right;
+	}
 }
 
-/* 3D Model CPT Admin Styles */
-.post-type-3d_model .wp3d-file-preview img {
-    max-width: 150px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+/* Responsive spacing */
+
+.wp3d-spacing-mobile {
+	margin: 10px;
+	padding: 10px;
 }
 
-.post-type-3d_model .wp3d-shortcode-usage {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+@media screen and (min-width: 768px) {
+	.wp3d-spacing-tablet {
+		margin: 15px;
+		padding: 15px;
+	}
 }
 
-.post-type-3d_model .wp3d-shortcode-copy {
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+@media screen and (min-width: 1024px) {
+	.wp3d-spacing-desktop {
+		margin: 20px;
+		padding: 20px;
+	}
 }
 
-.post-type-3d_model .wp3d-shortcode-copy:hover {
-    background-color: #e6e6e6 !important;
+/* Container queries for modern browsers */
+
+@supports (container-type: inline-size) {
+	.wp3d-container {
+		container-type: inline-size;
+	}
+	
+	/* Adjust layout when container is small */
+	@container (max-width: 400px) {
+		.wp3d-container .wp3d-grid {
+			grid-template-columns: 1fr;
+		}
+		
+		.wp3d-container .wp3d-file-type-card {
+			padding: 8px;
+		}
+		
+		.wp3d-container .wp3d-button {
+			width: 100%;
+		}
+	}
+	
+	/* Adjust layout when container is medium */
+	@container (min-width: 401px) and (max-width: 800px) {
+		.wp3d-container .wp3d-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	
+	/* Full layout when container is large */
+	@container (min-width: 801px) {
+		.wp3d-container .wp3d-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
 }
 
-.post-type-3d_model .wp3d-remove-button {
-    margin-left: 10px;
-    color: #a00;
+/* ==========================================================================
+   Plugin-wide Overrides
+   ========================================================================== */
+
+/* WordPress admin color scheme integration */
+
+body.admin-color-blue .wp-3d-model-viewer {
+	--wp3d-primary: #096484;
+	--wp3d-primary-hover: #0073aa;
 }
 
-.post-type-3d_model .wp3d-upload-button {
-    margin-right: 10px;
+body.admin-color-coffee .wp-3d-model-viewer {
+	--wp3d-primary: #46403c;
+	--wp3d-primary-hover: #59524c;
 }
 
-.post-type-3d_model .wp3d-zoom-value {
-    font-weight: bold;
-    margin-left: 10px;
-    color: #0073aa;
+body.admin-color-ectoplasm .wp-3d-model-viewer {
+	--wp3d-primary: #523f6d;
+	--wp3d-primary-hover: #46395d;
 }
 
-.post-type-3d_model .wp3d-file-preview p {
-    margin: 5px 0;
+body.admin-color-midnight .wp-3d-model-viewer {
+	--wp3d-primary: #e14d43;
+	--wp3d-primary-hover: #dd382d;
 }
 
-.post-type-3d_model .wp3d-file-preview small {
-    color: #666;
-    word-break: break-all;
+body.admin-color-ocean .wp-3d-model-viewer {
+	--wp3d-primary: #627c83;
+	--wp3d-primary-hover: #738e96;
 }
 
-/* Admin List Table Styles */
-.wp-list-table .column-thumbnail {
-    width: 80px;
-    text-align: center;
+body.admin-color-sunrise .wp-3d-model-viewer {
+	--wp3d-primary: #dd823b;
+	--wp3d-primary-hover: #d97426;
 }
 
-.wp-list-table .column-shortcode {
-    width: 200px;
+/* High contrast mode adjustments */
+
+@media (prefers-contrast: high) {
+	.wp-3d-model-viewer {
+		--wp3d-border: #000;
+		--wp3d-text: #000;
+		--wp3d-text-muted: #333;
+		--wp3d-bg-white: #fff;
+		--wp3d-bg-light: #f9f9f9;
+	}
 }
 
-.wp-list-table .column-shortcode code {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+/* Reduced motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+	.wp-3d-model-viewer *,
+	.wp-3d-model-viewer *::before,
+	.wp-3d-model-viewer *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		transition-delay: 0ms !important;
+	}
 }
 
-.wp-list-table .column-shortcode code:hover {
-    background-color: #e0e0e0;
+/* Print styles */
+
+@media print {
+	.wp-3d-model-viewer .wp3d-action-buttons,
+	.wp-3d-model-viewer .notice,
+	.wp-3d-model-viewer .wp3d-file-input-wrapper {
+		display: none !important;
+	}
+	
+	.wp-3d-model-viewer {
+		background: white !important;
+		color: black !important;
+	}
+	
+	.wp-3d-model-viewer .form-table th,
+	.wp-3d-model-viewer .form-table td {
+		border: 1px solid #ddd !important;
+		padding: 8px !important;
+	}
 }
 
-.wp3d-documentation {
-    margin-top: 40px;
-    padding: 20px;
-    background: #f9f9f9;
-    border-left: 4px solid #0073aa;
-    border-radius: 3px;
+/* ==========================================================================
+   Plugin Namespace
+   ========================================================================== */
+
+/**
+ * All plugin styles are scoped under .wp-3d-model-viewer
+ * or use the wp3d- prefix to avoid conflicts with WordPress core
+ * and other plugins.
+ */
+
+/* Ensure proper isolation from theme styles */
+
+.wp-3d-model-viewer {
+	/* Reset any theme interference */
+	box-sizing: border-box;
+	line-height: 1.5;
 }
 
-.wp3d-documentation h2 {
-    margin-top: 0;
-    color: #23282d;
+.wp-3d-model-viewer *,
+.wp-3d-model-viewer *::before,
+.wp-3d-model-viewer *::after {
+	box-sizing: inherit;
 }
 
-.wp3d-documentation h3 {
-    margin-bottom: 10px;
-    color: #0073aa;
+/* ==========================================================================
+   Browser Support & Feature Detection
+   ========================================================================== */
+
+/* Fallbacks for older browsers that don't support CSS Grid */
+
+@supports not (display: grid) {
+	.wp3d-grid,
+	.wp3d-file-type-grid,
+	.wp3d-toggle-grid,
+	.wp3d-model-settings {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	
+	.wp3d-grid > *,
+	.wp3d-file-type-grid > *,
+	.wp3d-toggle-grid > *,
+	.wp3d-model-settings > * {
+		flex: 1 1 250px;
+	}
 }
 
-.wp3d-documentation code {
-    background: #f1f1f1;
-    padding: 10px;
-    display: block;
-    margin: 10px 0;
-    border-radius: 3px;
-    font-family: Consolas, Monaco, 'Courier New', monospace;
-    overflow-x: auto;
+/* Fallbacks for browsers that don't support CSS custom properties */
+
+@supports not (--css: variables) {
+	.wp-3d-model-viewer {
+		color: #333;
+		background: #fff;
+	}
+	
+	.wp3d-button-primary {
+		background: #0073aa;
+		color: #fff;
+	}
+	
+	.wp3d-button-secondary {
+		background: #f7f7f7;
+		color: #555;
+		border: 1px solid #ccc;
+	}
+	
+	.wp3d-file-type-card {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 16px;
+	}
 }
 
-.wp3d-documentation ul {
-    margin-left: 20px;
+/* ==========================================================================
+   Debug Utilities (Development Only)
+   ========================================================================== */
+
+/* These styles are only included in development builds */
+
+/* They are removed by cssnano in production */
+
+/* CSS Grid debugging */
+
+.wp-3d-model-viewer[data-debug="grid"] .wp3d-grid > *,
+.wp-3d-model-viewer[data-debug="grid"] .wp3d-file-type-grid > *,
+.wp-3d-model-viewer[data-debug="grid"] .wp3d-toggle-grid > * {
+	outline: 1px solid rgba(255, 0, 0, 0.3);
+	background: rgba(255, 0, 0, 0.05);
 }
 
-.wp3d-documentation li {
-    margin-bottom: 5px;
+/* Spacing debugging */
+
+.wp-3d-model-viewer[data-debug="spacing"] * {
+	outline: 1px solid rgba(0, 255, 0, 0.3);
 }
 
-/* Admin notice styles */
-.wp3d-notice {
-    padding: 12px;
-    margin: 5px 0 15px;
-    border-left: 4px solid #00a0d2;
-    background: #fff;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+/* Typography debugging */
+
+.wp-3d-model-viewer[data-debug="typography"] * {
+	background: rgba(0, 0, 255, 0.05);
 }
 
-.wp3d-notice.error {
-    border-left-color: #dc3232;
-}
+/* Variable debugging - shows custom property values */
 
-.wp3d-notice.success {
-    border-left-color: #46b450;
-}
-
-.wp3d-notice.warning {
-    border-left-color: #ffb900;
-}
-
-/* Settings form improvements */
-.wp3d-settings-section {
-    margin-bottom: 30px;
-    padding: 15px;
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 3px;
-}
-
-.wp3d-settings-section h3 {
-    margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-/* File type checkboxes */
-.wp3d-file-types {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.wp3d-file-types label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
-    background: #f9f9f9;
-    border-radius: 3px;
-    transition: background-color 0.2s;
-}
-
-.wp3d-file-types label:hover {
-    background: #f0f0f0;
-}
-
-.wp3d-file-types input[type="checkbox"] {
-    margin: 0;
-}
-
-/* Color picker improvements */
-input[type="color"] {
-    width: 50px;
-    height: 30px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-/* Number input improvements */
-input[type="number"] {
-    width: 100px;
-}
-
-/* Responsive design */
-@media screen and (max-width: 782px) {
-    .wp3d-file-types {
-        grid-template-columns: 1fr;
-    }
-    
-    .wp3d-documentation code {
-        font-size: 12px;
-        padding: 8px;
-    }
+.wp-3d-model-viewer[data-debug="variables"]::before {
+	content: "CSS Variables Active: " 
+		"Primary: " #0073aa ", "
+		"Spacing Base: " var(--wp3d-space-base) ", "
+		"Font Size: " 13px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: #000;
+	color: #fff;
+	padding: 8px;
+	font-family: monospace;
+	font-size: 12px;
+	z-index: 9999;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }

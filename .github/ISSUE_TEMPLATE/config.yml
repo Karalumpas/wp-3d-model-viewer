@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation & Wiki
+    url: https://github.com/Karalumpas/wp-3d-model-viewer/wiki
+    about: Check our comprehensive documentation and guides
+  - name: 💬 Community Discussions
+    url: https://github.com/Karalumpas/wp-3d-model-viewer/discussions
+    about: Ask questions, share ideas, and discuss with the community
+  - name: 🛡️ Security Vulnerabilities
+    url: https://github.com/Karalumpas/wp-3d-model-viewer/security/advisories
+    about: Report security vulnerabilities privately
+  - name: 📧 Direct Support
+    url: mailto:support@karalumpas.com
+    about: For priority support and consulting services
+  - name: 💼 WordPress.org Support
+    url: https://wordpress.org/support/plugin/wp-3d-model-viewer/
+    about: Community support on WordPress.org (when published)

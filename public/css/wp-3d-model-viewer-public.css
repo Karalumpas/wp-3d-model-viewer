@@ -1,0 +1,518 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+/* Model Viewer Container */
+.wp3d-viewer {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 400px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.wp3d-viewer:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* CPT Model Specific Styles */
+.wp3d-cpt-model {
+    border: 2px solid #0073aa;
+    position: relative;
+}
+
+.wp3d-cpt-model::after {
+    content: "3D Model";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 115, 170, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Enhanced Loading States */
+.wp3d-loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.wp3d-loading-placeholder {
+    text-align: center;
+    color: #666;
+}
+
+.wp3d-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0073aa;
+    border-radius: 50%;
+    animation: wp3d-spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes wp3d-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.wp3d-poster-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Progress Bar */
+.wp3d-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.wp3d-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0073aa, #00a0d2);
+    width: 0%;
+    transition: width 0.3s ease;
+    animation: wp3d-progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes wp3d-progress-pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+/* Enhanced AR Button */
+.wp3d-ar-button {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 20;
+}
+
+.wp3d-ar-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.wp3d-ar-button:active {
+    transform: translateY(0);
+}
+
+.wp3d-ar-icon {
+    font-size: 16px;
+}
+
+.wp3d-ar-text {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Error Fallback */
+.wp3d-error-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: #f8f9fa;
+    color: #6c757d;
+    text-align: center;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+}
+
+.wp3d-error-fallback p {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+}
+
+.wp3d-error-fallback img {
+    max-width: 200px;
+    opacity: 0.7;
+    border-radius: 4px;
+}
+
+/* Model Viewer Element */
+model-viewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+    outline: none;
+    --poster-color: transparent;
+}
+
+/* Loading States */
+.wp3d-viewer[loading] {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: wp3d-loading 2s infinite;
+}
+
+@keyframes wp3d-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Poster/Placeholder */
+.wp3d-poster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    z-index: 1;
+}
+
+.wp3d-poster img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.wp3d-placeholder {
+    color: #6c757d;
+    font-size: 1.1em;
+    font-weight: 500;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Controls */
+.wp3d-controls {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.wp3d-control-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.wp3d-control-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+.wp3d-control-btn:active {
+    transform: scale(0.95);
+}
+
+.wp3d-control-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* AR Button */
+.wp3d-ar-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 10;
+}
+
+.wp3d-ar-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.wp3d-ar-button:active {
+    transform: translateY(0);
+}
+
+.wp3d-ar-button::before {
+    content: "📱";
+    margin-right: 8px;
+}
+
+/* Fullscreen Mode */
+.wp3d-viewer--fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    border-radius: 0 !important;
+}
+
+/* Error States */
+.wp3d-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.wp3d-error::before {
+    content: "⚠️";
+    margin-right: 8px;
+    font-size: 1.2em;
+}
+
+/* Progress Bar */
+.wp3d-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 5;
+}
+
+.wp3d-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Info Panel */
+.wp3d-info {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #333;
+    max-width: 200px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.wp3d-viewer:hover .wp3d-info {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.wp3d-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #222;
+}
+
+.wp3d-info p {
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wp3d-viewer {
+        border-radius: 4px;
+    }
+    
+    .wp3d-controls {
+        bottom: 12px;
+        right: 12px;
+        gap: 6px;
+    }
+    
+    .wp3d-control-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .wp3d-control-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .wp3d-ar-button {
+        bottom: 12px;
+        left: 12px;
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+    
+    .wp3d-info {
+        top: 12px;
+        left: 12px;
+        max-width: 160px;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .wp3d-info h4 {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wp3d-viewer {
+        height: 300px;
+    }
+    
+    .wp3d-controls {
+        flex-direction: column;
+    }
+    
+    .wp3d-ar-button {
+        position: static;
+        margin: 12px;
+        align-self: flex-start;
+    }
+}
+
+/* Animation Classes */
+.wp3d-fade-in {
+    animation: wp3d-fadeIn 0.5s ease-in-out;
+}
+
+@keyframes wp3d-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.wp3d-scale-in {
+    animation: wp3d-scaleIn 0.3s ease-out;
+}
+
+@keyframes wp3d-scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Focus States for Accessibility */
+.wp3d-control-btn:focus,
+.wp3d-ar-button:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+model-viewer:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 4px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .wp3d-viewer {
+        border: 2px solid #000;
+    }
+    
+    .wp3d-control-btn {
+        background: #000;
+        border: 1px solid #fff;
+    }
+    
+    .wp3d-ar-button {
+        background: #000;
+        border: 1px solid #fff;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .wp3d-viewer,
+    .wp3d-control-btn,
+    .wp3d-ar-button,
+    .wp3d-info,
+    .wp3d-progress-bar {
+        transition: none;
+    }
+    
+    .wp3d-fade-in,
+    .wp3d-scale-in {
+        animation: none;
+    }
+    
+    @keyframes wp3d-loading {
+        0%, 100% {
+            background-position: 0 0;
+        }
+    }
+}

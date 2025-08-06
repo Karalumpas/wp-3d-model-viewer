@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -79,7 +78,6 @@ class WP_3D_Model_Viewer {
 		$this->define_admin_hooks();
 		$this->define_cpt_hooks();
 		$this->define_public_hooks();
-
 	}
 
 	/**
@@ -104,32 +102,31 @@ class WP_3D_Model_Viewer {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-3d-model-viewer-loader.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-wp-3d-model-viewer-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-3d-model-viewer-i18n.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-wp-3d-model-viewer-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-3d-model-viewer-admin.php';
+		require_once plugin_dir_path( __DIR__ ) . 'admin/class-wp-3d-model-viewer-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-3d-model-viewer-public.php';
+		require_once plugin_dir_path( __DIR__ ) . 'public/class-wp-3d-model-viewer-public.php';
 
 		/**
 		 * The class responsible for defining the custom post type functionality.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-3d-model-viewer-cpt.php';
+		require_once plugin_dir_path( __DIR__ ) . 'includes/class-wp-3d-model-viewer-cpt.php';
 
 		$this->loader = new WP_3D_Model_Viewer_Loader();
-
 	}
 
 	/**
@@ -146,7 +143,6 @@ class WP_3D_Model_Viewer {
 		$plugin_i18n = new WP_3D_Model_Viewer_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -164,17 +160,15 @@ class WP_3D_Model_Viewer {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
 
-		// Add menu
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );
+								// Add settings page.
+				$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );
 
-		// Add Settings link to the plugin
+				// Add Settings link to the plugin.
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . 'wp-3d-model-viewer.php' );
 		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
 
-		// Handle settings save
+				// Handle settings save.
 		$this->loader->add_action( 'admin_post_wp_3d_model_viewer_save_settings', $plugin_admin, 'save_settings' );
-
 	}
 
 	/**
@@ -188,21 +182,20 @@ class WP_3D_Model_Viewer {
 
 		$plugin_cpt = new WP_3D_Model_Viewer_CPT();
 
-		// Register the custom post type
+				// Register the custom post type.
 		$this->loader->add_action( 'init', $plugin_cpt, 'register_post_type' );
 
-		// Add admin columns
+				// Add admin columns.
 		$this->loader->add_filter( 'manage_3d_model_posts_columns', $plugin_cpt, 'add_admin_columns' );
 		$this->loader->add_action( 'manage_3d_model_posts_custom_column', $plugin_cpt, 'populate_admin_columns', 10, 2 );
 		$this->loader->add_filter( 'manage_edit-3d_model_sortable_columns', $plugin_cpt, 'make_columns_sortable' );
 
-		// Add metaboxes
+				// Add metaboxes.
 		$this->loader->add_action( 'add_meta_boxes', $plugin_cpt, 'add_metaboxes' );
 		$this->loader->add_action( 'save_post', $plugin_cpt, 'save_metabox_data' );
 
-		// Enqueue admin scripts
+				// Enqueue admin scripts.
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_cpt, 'enqueue_admin_scripts' );
-
 	}
 
 	/**
@@ -219,12 +212,11 @@ class WP_3D_Model_Viewer {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-		// Add shortcode
+				// Add shortcode.
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcode' );
 
-		// Add Gutenberg block
+				// Add Gutenberg block.
 		$this->loader->add_action( 'init', $plugin_public, 'register_block' );
-
 	}
 
 	/**
@@ -266,5 +258,4 @@ class WP_3D_Model_Viewer {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

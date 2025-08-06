@@ -57,8 +57,11 @@ define( 'WP_3D_MODEL_VIEWER_TEXT_DOMAIN', 'wp-3d-model-viewer' );
  * This action is documented in includes/class-wp-3d-model-viewer-activator.php
  */
 function activate_wp_3d_model_viewer() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer-activator.php';
-	WP_3D_Model_Viewer_Activator::activate();
+	$activator_file = plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer-activator.php';
+	if ( file_exists( $activator_file ) ) {
+		require_once $activator_file;
+		WP_3D_Model_Viewer_Activator::activate();
+	}
 }
 
 /**
@@ -66,8 +69,11 @@ function activate_wp_3d_model_viewer() {
  * This action is documented in includes/class-wp-3d-model-viewer-deactivator.php
  */
 function deactivate_wp_3d_model_viewer() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer-deactivator.php';
-	WP_3D_Model_Viewer_Deactivator::deactivate();
+	$deactivator_file = plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer-deactivator.php';
+	if ( file_exists( $deactivator_file ) ) {
+		require_once $deactivator_file;
+		WP_3D_Model_Viewer_Deactivator::deactivate();
+	}
 }
 
 register_activation_hook( __FILE__, 'activate_wp_3d_model_viewer' );
@@ -77,7 +83,16 @@ register_deactivation_hook( __FILE__, 'deactivate_wp_3d_model_viewer' );
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer.php';
+$core_file = plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer.php';
+if ( ! file_exists( $core_file ) ) {
+	add_action( 'admin_notices', function() {
+		echo '<div class="notice notice-error"><p>';
+		echo esc_html__( 'WP 3D Model Viewer Error: Core plugin file is missing. Please reinstall the plugin.', 'wp-3d-model-viewer' );
+		echo '</p></div>';
+	});
+	return;
+}
+require $core_file;
 
 /**
  * Begins execution of the plugin.
@@ -89,9 +104,9 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer.php';
  * @since    1.0.0
  */
 function run_wp_3d_model_viewer() {
-
-	$plugin = new WP_3D_Model_Viewer();
-	$plugin->run();
-
+	if ( class_exists( 'WP_3D_Model_Viewer' ) ) {
+		$plugin = new WP_3D_Model_Viewer();
+		$plugin->run();
+	}
 }
 run_wp_3d_model_viewer();

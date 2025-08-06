@@ -577,6 +577,9 @@ class WP_3D_Model_Viewer_Admin {
 		</div>
 		<?php
 	}
+
+	/**
+	 * Add action links to the plugin page.
 	 *
 	 * @since    1.0.0
 	 */

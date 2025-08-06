@@ -100,35 +100,54 @@ class WP_3D_Model_Viewer {
 	 */
 	private function load_dependencies() {
 
+		$plugin_root = plugin_dir_path( dirname( __FILE__ ) );
+		
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-3d-model-viewer-loader.php';
+		$loader_file = $plugin_root . 'includes/class-wp-3d-model-viewer-loader.php';
+		if ( file_exists( $loader_file ) ) {
+			require_once $loader_file;
+		}
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-3d-model-viewer-i18n.php';
+		$i18n_file = $plugin_root . 'includes/class-wp-3d-model-viewer-i18n.php';
+		if ( file_exists( $i18n_file ) ) {
+			require_once $i18n_file;
+		}
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-3d-model-viewer-admin.php';
+		$admin_file = $plugin_root . 'admin/class-wp-3d-model-viewer-admin.php';
+		if ( file_exists( $admin_file ) ) {
+			require_once $admin_file;
+		}
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-3d-model-viewer-public.php';
+		$public_file = $plugin_root . 'public/class-wp-3d-model-viewer-public.php';
+		if ( file_exists( $public_file ) ) {
+			require_once $public_file;
+		}
 
 		/**
 		 * The class responsible for defining the custom post type functionality.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wp-3d-model-viewer-cpt.php';
+		$cpt_file = $plugin_root . 'includes/class-wp-3d-model-viewer-cpt.php';
+		if ( file_exists( $cpt_file ) ) {
+			require_once $cpt_file;
+		}
 
-		$this->loader = new WP_3D_Model_Viewer_Loader();
+		if ( class_exists( 'WP_3D_Model_Viewer_Loader' ) ) {
+			$this->loader = new WP_3D_Model_Viewer_Loader();
+		}
 
 	}
 

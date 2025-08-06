@@ -1,0 +1,71 @@
+{
+    "name": "karalumpas/wp-3d-model-viewer",
+    "description": "A WordPress plugin for viewing 3D models in the browser with interactive controls and modern web technologies.",
+    "type": "wordpress-plugin",
+    "keywords": [
+        "wordpress",
+        "plugin",
+        "3d",
+        "model",
+        "viewer",
+        "webgl",
+        "three.js",
+        "gltf",
+        "3d-models"
+    ],
+    "homepage": "https://github.com/Karalumpas/wp-3d-model-viewer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Karalumpas",
+            "email": "your-email@example.com",
+            "homepage": "https://github.com/Karalumpas"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Karalumpas/wp-3d-model-viewer/issues",
+        "source": "https://github.com/Karalumpas/wp-3d-model-viewer",
+        "docs": "https://github.com/Karalumpas/wp-3d-model-viewer/wiki"
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0",
+        "squizlabs/php_codesniffer": "^3.6",
+        "wp-coding-standards/wpcs": "^3.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/php-compatibility": "^9.3",
+        "roave/security-advisories": "dev-latest"
+    },
+    "autoload": {
+        "psr-4": {
+            "Karalumpas\\WP3DModelViewer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Karalumpas\\WP3DModelViewer\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "phpcs": "phpcs --standard=WordPress src/",
+        "phpcbf": "phpcbf --standard=WordPress src/",
+        "post-install-cmd": [
+            "@php -r \"file_exists('phpcs.xml') || copy('phpcs.xml.dist', 'phpcs.xml');\""
+        ],
+        "post-update-cmd": [
+            "@php -r \"file_exists('phpcs.xml') || copy('phpcs.xml.dist', 'phpcs.xml');\""
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

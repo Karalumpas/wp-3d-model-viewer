@@ -30,7 +30,7 @@ class WP_3D_Model_Viewer_CPT {
 	 * @access   private
 	 * @var      string    $post_type    The post type slug.
 	 */
-	private $post_type = '3d_model';
+	private $post_type = 'wp_3d_model';
 
 	/**
 	 * Initialize the class and set its properties.
@@ -260,8 +260,10 @@ class WP_3D_Model_Viewer_CPT {
 		// Get current values
 		$model_file = get_post_meta( $post->ID, '_wp3d_model_file', true );
 		$poster_image = get_post_meta( $post->ID, '_wp3d_poster_image', true );
-		$bg_color = get_post_meta( $post->ID, '_wp3d_bg_color', true ) ?: '#ffffff';
-		$start_rotation = get_post_meta( $post->ID, '_wp3d_start_rotation', true ) ?: '0deg 75deg 105%';
+		$bg_color = get_post_meta( $post->ID, '_wp3d_bg_color', true );
+		if ( empty( $bg_color ) ) $bg_color = '#ffffff';
+		$start_rotation = get_post_meta( $post->ID, '_wp3d_start_rotation', true );
+		if ( empty( $start_rotation ) ) $start_rotation = '0deg 75deg 105%';
 		$auto_rotate = get_post_meta( $post->ID, '_wp3d_auto_rotate', true );
 		$camera_controls = get_post_meta( $post->ID, '_wp3d_camera_controls', true );
 		$ar_enabled = get_post_meta( $post->ID, '_wp3d_ar_enabled', true );
@@ -286,7 +288,7 @@ class WP_3D_Model_Viewer_CPT {
 							<?php if ( $poster_image ) : ?>
 							poster="<?php echo esc_url( wp_get_attachment_url( $poster_image ) ); ?>"
 							<?php endif; ?>
-							alt="<?php echo esc_attr( $post->post_title ?: '3D Model Preview' ); ?>">
+							alt="<?php echo esc_attr( $post->post_title ? $post->post_title : '3D Model Preview' ); ?>">
 							
 							<!-- Loading placeholder -->
 							<div slot="poster" class="wp3d-loading-state">
@@ -746,12 +748,6 @@ class WP_3D_Model_Viewer_CPT {
 		<?php
 	}
 
-	/**
-	 * Model settings metabox callback.
-	 *
-	 * @since    1.0.0
-	 * @param    WP_Post    $post    Post object.
-	 */
 	/**
 	 * Model settings metabox callback.
 	 *

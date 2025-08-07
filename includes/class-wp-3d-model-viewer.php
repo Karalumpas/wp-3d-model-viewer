@@ -187,9 +187,9 @@ class WP_3D_Model_Viewer {
 		$this->loader->add_action( 'init', $plugin_cpt, 'register_post_type' );
 
 				// Add admin columns.
-		$this->loader->add_filter( 'manage_3d_model_posts_columns', $plugin_cpt, 'add_admin_columns' );
-		$this->loader->add_action( 'manage_3d_model_posts_custom_column', $plugin_cpt, 'populate_admin_columns', 10, 2 );
-		$this->loader->add_filter( 'manage_edit-3d_model_sortable_columns', $plugin_cpt, 'make_columns_sortable' );
+		$this->loader->add_filter( 'manage_wp_3d_model_posts_columns', $plugin_cpt, 'add_admin_columns' );
+		$this->loader->add_action( 'manage_wp_3d_model_posts_custom_column', $plugin_cpt, 'populate_admin_columns', 10, 2 );
+		$this->loader->add_filter( 'manage_edit-wp_3d_model_sortable_columns', $plugin_cpt, 'make_columns_sortable' );
 
 				// Add metaboxes.
 		$this->loader->add_action( 'add_meta_boxes', $plugin_cpt, 'add_metaboxes' );

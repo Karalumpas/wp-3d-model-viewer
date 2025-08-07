@@ -139,7 +139,7 @@ class WP_3D_Model_Viewer_Public {
 		global $post;
 		
 		// Always load on single 3D model posts
-		if ( is_singular( '3d_model' ) ) {
+		if ( is_singular( 'wp_3d_model' ) ) {
 			return true;
 		}
 		
@@ -451,7 +451,7 @@ class WP_3D_Model_Viewer_Public {
 		
 		// Check if post exists and is correct type
 		$post = get_post( $post_id );
-		if ( ! $post || $post->post_type !== '3d_model' ) {
+		if ( ! $post || $post->post_type !== 'wp_3d_model' ) {
 			return '<div class="wp3d-error">Error: 3D Model not found (ID: ' . $post_id . ').</div>';
 		}
 

@@ -262,20 +262,35 @@ model-viewer {
     --poster-color: transparent;
 }
 
-/* Loading States */
-.wp3d-viewer[loading] {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: wp3d-loading 2s infinite;
+/* Loading States - Fixed selector to match JavaScript class */
+.wp3d-viewer.wp3d-loading {
+    position: relative;
+    background: #f5f5f5;
 }
 
-@keyframes wp3d-loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+.wp3d-viewer.wp3d-loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(245, 245, 245, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.wp3d-viewer.wp3d-loading::after {
+    content: 'Loading...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #666;
+    font-size: 14px;
+    z-index: 2;
 }
 
 /* Poster/Placeholder */
@@ -677,11 +692,5 @@ model-viewer:focus {
     .wp3d-fade-in,
     .wp3d-scale-in {
         animation: none;
-    }
-    
-    @keyframes wp3d-loading {
-        0%, 100% {
-            background-position: 0 0;
-        }
     }
 }

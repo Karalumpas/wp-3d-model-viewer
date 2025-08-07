@@ -84,37 +84,33 @@ class WP_3D_Model_Viewer_Public {
 	 */
 	public function enqueue_scripts() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in WP_3D_Model_Viewer_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The WP_3D_Model_Viewer_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+		// Only load model-viewer on pages that have shortcodes or blocks
+		if ( $this->has_3d_content() ) {
+			// Enqueue model-viewer library with module attribute
+			wp_enqueue_script( 
+				'model-viewer', 
+				'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js', 
+				array(), 
+				'3.5.0', 
+				true 
+			);
+			
+			// Add module attribute to the model-viewer script (no async to avoid loading issues)
+			add_filter( 'script_loader_tag', array( $this, 'add_module_attribute' ), 10, 3 );
 
-		// Enqueue model-viewer library with module and async attributes
-		wp_enqueue_script( 
-			'model-viewer', 
-			'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js', 
-			array(), 
-			'3.5.0', 
-			true 
-		);
-		
-		// Add module and async attributes to the model-viewer script
-		add_filter( 'script_loader_tag', array( $this, 'add_module_async_attributes' ), 10, 3 );
-
-		// Enqueue plugin JavaScript
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-public.js', array( 'jquery', 'model-viewer' ), $this->version, true );
-
+			// Enqueue plugin JavaScript
+			wp_enqueue_script( 
+				$this->plugin_name, 
+				plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-public.js', 
+				array( 'jquery' ), 
+				$this->version, 
+				true 
+			);
+		}
 	}
 
 	/**
-	 * Add module and async attributes to model-viewer script.
+	 * Add module attribute to model-viewer script.
 	 *
 	 * @since    1.0.0
 	 * @param    string    $tag     The script tag.
@@ -122,14 +118,52 @@ class WP_3D_Model_Viewer_Public {
 	 * @param    string    $src     The script source URL.
 	 * @return   string             Modified script tag.
 	 */
-	public function add_module_async_attributes( $tag, $handle, $src ) {
+	public function add_module_attribute( $tag, $handle, $src ) {
 		
 		if ( 'model-viewer' === $handle ) {
-			// Add type="module" and async attributes for model-viewer
-			$tag = str_replace( '<script ', '<script type="module" async ', $tag );
+			// Add type="module" attribute for model-viewer (remove async to ensure proper loading)
+			$tag = str_replace( '<script ', '<script type="module" ', $tag );
 		}
 		
 		return $tag;
+	}
+
+	/**
+	 * Check if the current page/post contains 3D model content.
+	 *
+	 * @since    1.0.0
+	 * @return   bool    True if 3D content is found.
+	 */
+	private function has_3d_content() {
+		
+		global $post;
+		
+		// Always load on single 3D model posts
+		if ( is_singular( '3d_model' ) ) {
+			return true;
+		}
+		
+		// Check if current post has shortcodes
+		if ( $post && has_shortcode( $post->post_content, '3d_model_viewer' ) ) {
+			return true;
+		}
+		
+		if ( $post && has_shortcode( $post->post_content, '3d_model' ) ) {
+			return true;
+		}
+		
+		if ( $post && has_shortcode( $post->post_content, 'model_viewer' ) ) {
+			return true;
+		}
+		
+		// Check for Gutenberg blocks (if available)
+		if ( function_exists( 'has_block' ) && $post && has_block( 'wp-3d-model-viewer/model-viewer', $post ) ) {
+			return true;
+		}
+		
+		// For now, let's always load to ensure compatibility
+		// TODO: Optimize this in future versions
+		return true;
 	}
 
 	/**
@@ -309,11 +343,16 @@ class WP_3D_Model_Viewer_Public {
 
 		// Get model settings from post meta
 		$bg_color = get_post_meta( $post_id, '_wp3d_bg_color', true ) ?: '#ffffff';
-		$start_rotation = get_post_meta( $post_id, '_wp3d_start_rotation', true ) ?: '0deg 0deg 0deg';
+		$start_rotation = get_post_meta( $post_id, '_wp3d_start_rotation', true ) ?: '0deg 75deg 105%';
 		$zoom_level = get_post_meta( $post_id, '_wp3d_zoom_level', true ) ?: '1';
 		$ar_enabled = get_post_meta( $post_id, '_wp3d_ar_enabled', true );
 		$auto_rotate = get_post_meta( $post_id, '_wp3d_auto_rotate', true );
 		$camera_controls = get_post_meta( $post_id, '_wp3d_camera_controls', true );
+		
+		// Set default for camera_controls if empty (should be enabled by default)
+		if ( $camera_controls === '' ) {
+			$camera_controls = '1';
+		}
 
 		// Get optional files
 		$ios_file_id = get_post_meta( $post_id, '_wp3d_ios_file', true );
@@ -362,7 +401,7 @@ class WP_3D_Model_Viewer_Public {
 		);
 		
 		// Camera and interaction attributes
-		if ( $start_rotation && $start_rotation !== '0deg 0deg 0deg' ) {
+		if ( $start_rotation && $start_rotation !== '0deg 75deg 105%' && $start_rotation !== '0deg 0deg 0deg' ) {
 			$model_attributes['camera-orbit'] = esc_attr( $start_rotation );
 		}
 		
@@ -463,6 +502,19 @@ class WP_3D_Model_Viewer_Public {
 			'iosSrc' => $ios_src,
 		) );
 		$html .= '</script>';
+
+		// Add debug information if WP_DEBUG is enabled
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$html .= '<!-- WP 3D Model Viewer Debug Info:
+Model ID: ' . $post_id . '
+Model URL: ' . $model_url . '
+Camera Orbit: ' . $start_rotation . '
+Auto Rotate: ' . ( $auto_rotate ? 'Yes' : 'No' ) . '
+Camera Controls: ' . ( $camera_controls ? 'Yes' : 'No' ) . '
+AR Enabled: ' . ( $ar_enabled ? 'Yes' : 'No' ) . '
+Background: ' . $bg_color . '
+-->';
+		}
 
 		return $html;
 	}

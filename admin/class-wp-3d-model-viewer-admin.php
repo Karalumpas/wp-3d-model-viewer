@@ -132,21 +132,21 @@ class WP_3D_Model_Viewer_Admin {
 		return $tag;
 	}
 
-		/**
-		 * Initialize WordPress Settings API.
-		 *
-		 * @since    1.0.0
-		 */
+	/**
+	 * Initialize WordPress Settings API.
+	 *
+	 * @since    1.0.0
+	 */
 	public function admin_init() {
 
-				// Register settings.
+		// Register settings.
 		register_setting(
 			'wp_3d_model_viewer_settings',
 			'wp_3d_model_viewer_options',
 			array( $this, 'validate_options' )
 		);
 
-				// Add settings sections.
+		// Add settings sections.
 		add_settings_section(
 			'wp_3d_model_viewer_general',
 			__( 'General Settings', 'wp-3d-model-viewer' ),
@@ -168,7 +168,7 @@ class WP_3D_Model_Viewer_Admin {
 			'wp-3d-model-viewer'
 		);
 
-				// Add settings fields.
+		// Add settings fields.
 		$this->add_settings_fields();
 	}
 

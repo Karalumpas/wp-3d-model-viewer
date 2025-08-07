@@ -78,6 +78,7 @@ class WP_3D_Model_Viewer {
 		$this->define_admin_hooks();
 		$this->define_cpt_hooks();
 		$this->define_public_hooks();
+		$this->enable_3d_model_uploads();
 	}
 
 	/**
@@ -257,5 +258,55 @@ class WP_3D_Model_Viewer {
 	 */
 	public function get_version() {
 		return $this->version;
+	}
+
+	/**
+	 * Enable 3D model file uploads by adding MIME types.
+	 *
+	 * @since     1.0.0
+	 */
+	private function enable_3d_model_uploads() {
+		$this->loader->add_filter( 'upload_mimes', $this, 'add_3d_model_mime_types' );
+	}
+
+	/**
+	 * Add 3D model MIME types to allowed uploads.
+	 *
+	 * @since    1.0.0
+	 * @param    array $mimes    Existing allowed MIME types.
+	 * @return   array           Modified MIME types.
+	 */
+	public function add_3d_model_mime_types( $mimes ) {
+		
+		// Get plugin settings to determine which MIME types to enable
+		$options = get_option( 'wp_3d_model_viewer_options' );
+		$allowed_mime_types = isset( $options['allowed_mime_types'] ) ? $options['allowed_mime_types'] : array();
+
+		// If no settings exist yet, enable GLB and GLTF by default
+		if ( empty( $allowed_mime_types ) ) {
+			$allowed_mime_types = array( 'model/gltf-binary', 'model/gltf+json' );
+		}
+
+		// Map MIME types to file extensions
+		$mime_map = array(
+			'model/gltf+json'          => array( 'gltf' ),
+			'model/gltf-binary'        => array( 'glb' ),
+			'application/octet-stream' => array( 'obj' ),
+			'application/x-tgif'       => array( 'fbx' ),
+			'model/vnd.collada+xml'    => array( 'dae' ),
+			'model/vnd.usdz+zip'       => array( 'usdz' ),
+			'model/vnd.pixar.usd'      => array( 'usd' ),
+		);
+
+		// Add enabled MIME types to WordPress upload allowlist
+		foreach ( $allowed_mime_types as $mime_type ) {
+			if ( isset( $mime_map[ $mime_type ] ) ) {
+				foreach ( $mime_map[ $mime_type ] as $extension ) {
+					$mimes[ $extension ] = $mime_type;
+				}
+			}
+		}
+
+		return $mimes;
 	}
 }

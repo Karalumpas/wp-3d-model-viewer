@@ -1,0 +1,224 @@
+/**
+ * WP 3D Model Viewer - Main Admin Styles
+ * Entry point for all admin CSS modules
+ * 
+ * Build System: PostCSS with autoprefixer, cssnano, and modern CSS processing
+ * Architecture: Modular CSS with design tokens and component separation
+ * 
+ * @package WP_3D_Model_Viewer
+ * @version 2.0.0
+ */
+
+/* ==========================================================================
+   CSS Imports - Order matters for cascade
+   ========================================================================== */
+
+/* Design tokens and CSS custom properties */
+@import './_variables.css';
+
+/* Base styles, resets, and global utilities */
+@import './_global.css';
+
+/* Plugin settings page specific styles */
+@import './_settings.css';
+
+/* Custom Post Type (3D Models) admin interface */
+@import './_cpt.css';
+
+/* Responsive utilities and breakpoint helpers */
+@import './_responsive.css';
+
+/* ==========================================================================
+   Plugin-wide Overrides
+   ========================================================================== */
+
+/* WordPress admin color scheme integration */
+body.admin-color-blue .wp-3d-model-viewer {
+	--wp3d-primary: #096484;
+	--wp3d-primary-hover: #0073aa;
+}
+
+body.admin-color-coffee .wp-3d-model-viewer {
+	--wp3d-primary: #46403c;
+	--wp3d-primary-hover: #59524c;
+}
+
+body.admin-color-ectoplasm .wp-3d-model-viewer {
+	--wp3d-primary: #523f6d;
+	--wp3d-primary-hover: #46395d;
+}
+
+body.admin-color-midnight .wp-3d-model-viewer {
+	--wp3d-primary: #e14d43;
+	--wp3d-primary-hover: #dd382d;
+}
+
+body.admin-color-ocean .wp-3d-model-viewer {
+	--wp3d-primary: #627c83;
+	--wp3d-primary-hover: #738e96;
+}
+
+body.admin-color-sunrise .wp-3d-model-viewer {
+	--wp3d-primary: #dd823b;
+	--wp3d-primary-hover: #d97426;
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+	.wp-3d-model-viewer {
+		--wp3d-border: #000;
+		--wp3d-text: #000;
+		--wp3d-text-muted: #333;
+		--wp3d-bg-white: #fff;
+		--wp3d-bg-light: #f9f9f9;
+	}
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+	.wp-3d-model-viewer *,
+	.wp-3d-model-viewer *::before,
+	.wp-3d-model-viewer *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		transition-delay: 0ms !important;
+	}
+}
+
+/* Print styles */
+@media print {
+	.wp-3d-model-viewer .wp3d-action-buttons,
+	.wp-3d-model-viewer .notice,
+	.wp-3d-model-viewer .wp3d-file-input-wrapper {
+		display: none !important;
+	}
+	
+	.wp-3d-model-viewer {
+		background: white !important;
+		color: black !important;
+	}
+	
+	.wp-3d-model-viewer .form-table th,
+	.wp-3d-model-viewer .form-table td {
+		border: 1px solid #ddd !important;
+		padding: 8px !important;
+	}
+}
+
+/* ==========================================================================
+   Plugin Namespace
+   ========================================================================== */
+
+/**
+ * All plugin styles are scoped under .wp-3d-model-viewer
+ * or use the wp3d- prefix to avoid conflicts with WordPress core
+ * and other plugins.
+ */
+
+/* Ensure proper isolation from theme styles */
+.wp-3d-model-viewer {
+	/* Reset any theme interference */
+	box-sizing: border-box;
+	line-height: var(--wp3d-line-height-normal);
+}
+
+.wp-3d-model-viewer *,
+.wp-3d-model-viewer *::before,
+.wp-3d-model-viewer *::after {
+	box-sizing: inherit;
+}
+
+/* ==========================================================================
+   Browser Support & Feature Detection
+   ========================================================================== */
+
+/* Fallbacks for older browsers that don't support CSS Grid */
+@supports not (display: grid) {
+	.wp3d-grid,
+	.wp3d-file-type-grid,
+	.wp3d-toggle-grid,
+	.wp3d-model-settings {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--wp3d-space-lg);
+	}
+	
+	.wp3d-grid > *,
+	.wp3d-file-type-grid > *,
+	.wp3d-toggle-grid > *,
+	.wp3d-model-settings > * {
+		flex: 1 1 250px;
+	}
+}
+
+/* Fallbacks for browsers that don't support CSS custom properties */
+@supports not (--css: variables) {
+	.wp-3d-model-viewer {
+		color: #333;
+		background: #fff;
+	}
+	
+	.wp3d-button-primary {
+		background: #0073aa;
+		color: #fff;
+	}
+	
+	.wp3d-button-secondary {
+		background: #f7f7f7;
+		color: #555;
+		border: 1px solid #ccc;
+	}
+	
+	.wp3d-file-type-card {
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 16px;
+	}
+}
+
+/* ==========================================================================
+   Debug Utilities (Development Only)
+   ========================================================================== */
+
+/* These styles are only included in development builds */
+/* They are removed by cssnano in production */
+
+/* CSS Grid debugging */
+.wp-3d-model-viewer[data-debug="grid"] .wp3d-grid > *,
+.wp-3d-model-viewer[data-debug="grid"] .wp3d-file-type-grid > *,
+.wp-3d-model-viewer[data-debug="grid"] .wp3d-toggle-grid > * {
+	outline: 1px solid rgba(255, 0, 0, 0.3);
+	background: rgba(255, 0, 0, 0.05);
+}
+
+/* Spacing debugging */
+.wp-3d-model-viewer[data-debug="spacing"] * {
+	outline: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+/* Typography debugging */
+.wp-3d-model-viewer[data-debug="typography"] * {
+	background: rgba(0, 0, 255, 0.05);
+}
+
+/* Variable debugging - shows custom property values */
+.wp-3d-model-viewer[data-debug="variables"]::before {
+	content: "CSS Variables Active: " 
+		"Primary: " var(--wp3d-primary) ", "
+		"Spacing Base: " var(--wp3d-space-base) ", "
+		"Font Size: " var(--wp3d-font-size-base);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: #000;
+	color: #fff;
+	padding: 8px;
+	font-family: monospace;
+	font-size: 12px;
+	z-index: 9999;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

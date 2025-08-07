@@ -255,10 +255,21 @@ $settings = $admin->get_settings();
         <h3><?php _e( 'Enhanced Features', 'wp-3d-model-viewer' ); ?></h3>
         <ul>
             <li><?php _e( 'Google model-viewer library with ES6 modules', 'wp-3d-model-viewer' ); ?></li>
+            <li><?php _e( 'Interactive 3D model preview in admin with rotation capture', 'wp-3d-model-viewer' ); ?></li>
+            <li><?php _e( 'Visual camera position controls - no more guessing rotation values!', 'wp-3d-model-viewer' ); ?></li>
             <li><?php _e( 'Async loading for better performance', 'wp-3d-model-viewer' ); ?></li>
             <li><?php _e( 'Progressive loading with poster images', 'wp-3d-model-viewer' ); ?></li>
             <li><?php _e( 'WebXR and AR Quick Look support', 'wp-3d-model-viewer' ); ?></li>
             <li><?php _e( 'Responsive design with fallback content', 'wp-3d-model-viewer' ); ?></li>
+        </ul>
+
+        <h3><?php _e( 'NEW: Interactive Camera Position Setup', 'wp-3d-model-viewer' ); ?></h3>
+        <p><?php _e( 'When editing a 3D model, you can now:', 'wp-3d-model-viewer' ); ?></p>
+        <ul>
+            <li><?php _e( 'See a live preview of your 3D model in the admin', 'wp-3d-model-viewer' ); ?></li>
+            <li><?php _e( 'Rotate, zoom, and position the model visually', 'wp-3d-model-viewer' ); ?></li>
+            <li><?php _e( 'Click "Capture Current Position" to save the perfect view', 'wp-3d-model-viewer' ); ?></li>
+            <li><?php _e( 'Your visitors will see the model from your chosen angle', 'wp-3d-model-viewer' ); ?></li>
         </ul>
 
         <h3><?php _e( 'Complete AR Example', 'wp-3d-model-viewer' ); ?></h3>

@@ -29,6 +29,13 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	$(function() {
+		
+		// Initialize public functionality
+		WP3DModelViewer.init();
+		
+	});
+
 	/**
 	 * WP 3D Model Viewer Public JavaScript
 	 */
@@ -41,57 +48,29 @@
 			loadedViewers: new Set()
 		},
 
-		// Track initialization state
-		initialized: false,
-
 		/**
 		 * Initialize public functionality
 		 */
 		init: function() {
-			// Check if already initialized to prevent double initialization
-			if (this.initialized) {
-				return;
-			}
-			this.initialized = true;
-
-			this.loadModelViewerScript()
-				.then(() => {
+			// Ensure the custom element is defined before proceeding
+			if (window.customElements && window.customElements.whenDefined) {
+				window.customElements.whenDefined('model-viewer').then(() => {
 					this.initViewers();
 					this.bindEvents();
 					this.setupLazyLoading();
-				})
-				.catch(error => {
-					console.error('Failed to load model-viewer script:', error);
-					// Fallback: try to initialize without explicit script loading
-					setTimeout(() => {
-						this.initViewers();
-						this.bindEvents();
-						this.setupLazyLoading();
-					}, 1000);
 				});
+			} else {
+				// Fallback: proceed on DOM ready
+				this.initViewers();
+				this.bindEvents();
+				this.setupLazyLoading();
+			}
 		},
 
 		/**
 		 * Load the model-viewer script
 		 */
-		loadModelViewerScript: function() {
-			return new Promise((resolve, reject) => {
-				// Check if already loaded
-				if (window.customElements && window.customElements.get('model-viewer')) {
-					resolve();
-					return;
-				}
-
-				// Create script element
-				const script = document.createElement('script');
-				script.type = 'module';
-				script.src = this.config.modelViewerScript;
-				script.onload = resolve;
-				script.onerror = reject;
-				
-				document.head.appendChild(script);
-			});
-		},
+		loadModelViewerScript: function() { /* No-op: script is enqueued by WordPress */ return Promise.resolve(); },
 
 		/**
 		 * Initialize all model viewers on the page
@@ -459,19 +438,6 @@
 			}
 		}
 	};
-
-	// Initialize when DOM is ready
-	$(function() {
-		WP3DModelViewer.init();
-	});
-
-	// Also initialize when model-viewer library is ready
-	document.addEventListener('DOMContentLoaded', function() {
-		// Double-check initialization in case jQuery isn't available
-		if (typeof WP3DModelViewer !== 'undefined') {
-			WP3DModelViewer.init();
-		}
-	});
 
 	// Expose to global scope for external access
 	window.WP3DModelViewer = WP3DModelViewer;

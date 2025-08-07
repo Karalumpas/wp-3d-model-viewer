@@ -1,0 +1,139 @@
+/**
+ * WP 3D Model Viewer - CSS Variables
+ * Shared design tokens and custom properties
+ */
+
+:root {
+	/* Colors */
+	--wp3d-primary: #0073aa;
+	--wp3d-primary-hover: #005a87;
+	--wp3d-secondary: #646970;
+	--wp3d-text: #23282d;
+	--wp3d-text-muted: #666666;
+	--wp3d-success: #46b450;
+	--wp3d-warning: #ffb900;
+	--wp3d-error: #dc3232;
+	--wp3d-error-hover: #a00;
+	--wp3d-info: #00a0d2;
+	
+	/* Backgrounds */
+	--wp3d-bg-white: #ffffff;
+	--wp3d-bg-light: #f9f9f9;
+	--wp3d-bg-lighter: #f1f1f1;
+	--wp3d-bg-lightest: #f0f0f0;
+	--wp3d-bg-hover: #e6e6e6;
+	--wp3d-bg-subtle: #e0e0e0;
+	
+	/* Borders */
+	--wp3d-border: #ddd;
+	--wp3d-border-light: #e5e5e5;
+	--wp3d-border-lightest: #f0f0f0;
+	
+	/* Spacing */
+	--wp3d-space-xs: 3px;
+	--wp3d-space-sm: 5px;
+	--wp3d-space-md: 8px;
+	--wp3d-space-lg: 10px;
+	--wp3d-space-xl: 12px;
+	--wp3d-space-2xl: 15px;
+	--wp3d-space-3xl: 20px;
+	--wp3d-space-4xl: 30px;
+	--wp3d-space-5xl: 40px;
+	
+	/* Typography */
+	--wp3d-font-mono: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	--wp3d-font-size-xs: 11px;
+	--wp3d-font-size-sm: 12px;
+	--wp3d-font-size-base: 13px;
+	--wp3d-font-size-md: 14px;
+	--wp3d-font-size-lg: 16px;
+	--wp3d-font-size-xl: 18px;
+	--wp3d-font-weight-normal: 400;
+	--wp3d-font-weight-medium: 500;
+	--wp3d-font-weight-bold: 600;
+	--wp3d-line-height-tight: 1.2;
+	--wp3d-line-height-normal: 1.5;
+	--wp3d-line-height-loose: 1.7;
+	
+	/* Borders & Radius */
+	--wp3d-radius-sm: 3px;
+	--wp3d-radius: 4px;
+	--wp3d-radius-md: 6px;
+	--wp3d-radius-lg: 8px;
+	--wp3d-radius-xl: 12px;
+	--wp3d-radius-full: 50%;
+	--wp3d-radius-toggle: 24px;
+	
+	/* Sizing */
+	--wp3d-column-xs: 60px;
+	--wp3d-column-sm: 80px;
+	--wp3d-column-md: 150px;
+	--wp3d-column-lg: 200px;
+	--wp3d-column-xl: 250px;
+	--wp3d-input-height: 30px;
+	--wp3d-input-height-sm: 28px;
+	--wp3d-input-height-lg: 32px;
+	--wp3d-input-height-xl: 36px;
+	--wp3d-preview-xs: 40px;
+	--wp3d-preview-sm: 60px;
+	--wp3d-preview-md: 150px;
+	--wp3d-preview-lg: 200px;
+	--wp3d-preview-xl: 300px;
+	
+	/* Shadows */
+	--wp3d-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+	--wp3d-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	--wp3d-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	--wp3d-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	
+	/* Transitions */
+	--wp3d-transition-fast: 0.15s ease;
+	--wp3d-transition: 0.2s ease;
+	--wp3d-transition-slow: 0.3s ease;
+	--wp3d-transition-slower: 0.4s ease;
+	
+	/* Z-index scale */
+	--wp3d-z-dropdown: 1000;
+	--wp3d-z-sticky: 1020;
+	--wp3d-z-fixed: 1030;
+	--wp3d-z-modal-backdrop: 1040;
+	--wp3d-z-modal: 1050;
+	--wp3d-z-popover: 1060;
+	--wp3d-z-tooltip: 1070;
+	
+	/* Grid & Layout */
+	--wp3d-grid-gap: var(--wp3d-space-lg);
+	--wp3d-grid-gap-lg: var(--wp3d-space-3xl);
+	--wp3d-container-max-width: 1200px;
+	--wp3d-sidebar-width: 280px;
+	
+	/* Breakpoints (for container queries) */
+	--wp3d-breakpoint-sm: 576px;
+	--wp3d-breakpoint-md: 768px;
+	--wp3d-breakpoint-lg: 992px;
+	--wp3d-breakpoint-xl: 1200px;
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+	:root {
+		/* Override colors for dark mode */
+		--wp3d-text: #e2e8f0;
+		--wp3d-text-muted: #a0aec0;
+		--wp3d-bg-white: #1a202c;
+		--wp3d-bg-light: #2d3748;
+		--wp3d-bg-lighter: #4a5568;
+		--wp3d-border: #4a5568;
+		--wp3d-border-light: #2d3748;
+	}
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--wp3d-transition-fast: 0s;
+		--wp3d-transition: 0s;
+		--wp3d-transition-slow: 0s;
+		--wp3d-transition-slower: 0s;
+	}
+}

@@ -31,6 +31,15 @@ class WP_3D_Model_Viewer_Activator {
 	 */
 	public static function activate() {
 
+		// Check file integrity first
+		if ( ! self::check_file_integrity() ) {
+			wp_die( 
+				__( 'Plugin activation failed: Some required files are missing. Please reinstall the plugin.', 'wp-3d-model-viewer' ),
+				__( 'Plugin Activation Error', 'wp-3d-model-viewer' ),
+				array( 'back_link' => true )
+			);
+		}
+
 		// Create database tables if needed
 		self::create_tables();
 
@@ -97,6 +106,34 @@ class WP_3D_Model_Viewer_Activator {
 		);
 
 		add_option( 'wp_3d_model_viewer_settings', $default_options );
+	}
+
+	/**
+	 * Check if all required plugin files exist.
+	 *
+	 * @since    1.0.0
+	 * @return   bool True if all files exist, false otherwise
+	 */
+	private static function check_file_integrity() {
+		$plugin_dir = plugin_dir_path( dirname( __FILE__ ) );
+		
+		$required_files = array(
+			'wp-3d-model-viewer.php',
+			'includes/class-wp-3d-model-viewer.php',
+			'includes/class-wp-3d-model-viewer-loader.php',
+			'includes/class-wp-3d-model-viewer-i18n.php',
+			'includes/class-wp-3d-model-viewer-cpt.php',
+			'admin/class-wp-3d-model-viewer-admin.php',
+			'public/class-wp-3d-model-viewer-public.php'
+		);
+
+		foreach ( $required_files as $file ) {
+			if ( ! file_exists( $plugin_dir . $file ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

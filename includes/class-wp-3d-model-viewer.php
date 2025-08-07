@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The file that defines the core plugin class
  *
@@ -78,7 +79,7 @@ class WP_3D_Model_Viewer {
 		$this->define_admin_hooks();
 		$this->define_cpt_hooks();
 		$this->define_public_hooks();
-		$this->enable_3d_model_uploads();
+
 	}
 
 	/**
@@ -99,35 +100,55 @@ class WP_3D_Model_Viewer {
 	 */
 	private function load_dependencies() {
 
+		$plugin_root = plugin_dir_path( dirname( __FILE__ ) );
+		
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( __DIR__ ) . 'includes/class-wp-3d-model-viewer-loader.php';
+		$loader_file = $plugin_root . 'includes/class-wp-3d-model-viewer-loader.php';
+		if ( file_exists( $loader_file ) ) {
+			require_once $loader_file;
+		}
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( __DIR__ ) . 'includes/class-wp-3d-model-viewer-i18n.php';
+		$i18n_file = $plugin_root . 'includes/class-wp-3d-model-viewer-i18n.php';
+		if ( file_exists( $i18n_file ) ) {
+			require_once $i18n_file;
+		}
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( __DIR__ ) . 'admin/class-wp-3d-model-viewer-admin.php';
+		$admin_file = $plugin_root . 'admin/class-wp-3d-model-viewer-admin.php';
+		if ( file_exists( $admin_file ) ) {
+			require_once $admin_file;
+		}
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( __DIR__ ) . 'public/class-wp-3d-model-viewer-public.php';
+		$public_file = $plugin_root . 'public/class-wp-3d-model-viewer-public.php';
+		if ( file_exists( $public_file ) ) {
+			require_once $public_file;
+		}
 
 		/**
 		 * The class responsible for defining the custom post type functionality.
 		 */
-		require_once plugin_dir_path( __DIR__ ) . 'includes/class-wp-3d-model-viewer-cpt.php';
+		$cpt_file = $plugin_root . 'includes/class-wp-3d-model-viewer-cpt.php';
+		if ( file_exists( $cpt_file ) ) {
+			require_once $cpt_file;
+		}
 
-		$this->loader = new WP_3D_Model_Viewer_Loader();
+		if ( class_exists( 'WP_3D_Model_Viewer_Loader' ) ) {
+			$this->loader = new WP_3D_Model_Viewer_Loader();
+		}
+
 	}
 
 	/**
@@ -144,6 +165,7 @@ class WP_3D_Model_Viewer {
 		$plugin_i18n = new WP_3D_Model_Viewer_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+
 	}
 
 	/**
@@ -157,19 +179,19 @@ class WP_3D_Model_Viewer {
 
 		$plugin_admin = new WP_3D_Model_Viewer_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		// Enqueue admin assets
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		// Initialize settings API
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
+        $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+        $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		// Add settings page.
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );				// Add Settings link to the plugin.
+		// Add menu
+        $this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
+
+		// Add Settings link to the plugin
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . 'wp-3d-model-viewer.php' );
 		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
 
-				// Handle settings save.
+		// Handle settings save
 		$this->loader->add_action( 'admin_post_wp_3d_model_viewer_save_settings', $plugin_admin, 'save_settings' );
+
 	}
 
 	/**
@@ -183,20 +205,21 @@ class WP_3D_Model_Viewer {
 
 		$plugin_cpt = new WP_3D_Model_Viewer_CPT();
 
-				// Register the custom post type.
+		// Register the custom post type
 		$this->loader->add_action( 'init', $plugin_cpt, 'register_post_type' );
 
-				// Add admin columns.
-		$this->loader->add_filter( 'manage_wp_3d_model_posts_columns', $plugin_cpt, 'add_admin_columns' );
-		$this->loader->add_action( 'manage_wp_3d_model_posts_custom_column', $plugin_cpt, 'populate_admin_columns', 10, 2 );
-		$this->loader->add_filter( 'manage_edit-wp_3d_model_sortable_columns', $plugin_cpt, 'make_columns_sortable' );
+		// Add admin columns
+		$this->loader->add_filter( 'manage_3d_model_posts_columns', $plugin_cpt, 'add_admin_columns' );
+		$this->loader->add_action( 'manage_3d_model_posts_custom_column', $plugin_cpt, 'populate_admin_columns', 10, 2 );
+		$this->loader->add_filter( 'manage_edit-3d_model_sortable_columns', $plugin_cpt, 'make_columns_sortable' );
 
-				// Add metaboxes.
+		// Add metaboxes
 		$this->loader->add_action( 'add_meta_boxes', $plugin_cpt, 'add_metaboxes' );
 		$this->loader->add_action( 'save_post', $plugin_cpt, 'save_metabox_data' );
 
-				// Enqueue admin scripts.
+		// Enqueue admin scripts
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_cpt, 'enqueue_admin_scripts' );
+
 	}
 
 	/**
@@ -213,11 +236,12 @@ class WP_3D_Model_Viewer {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-				// Add shortcode.
+		// Add shortcode
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcode' );
 
-				// Add Gutenberg block.
+		// Add Gutenberg block
 		$this->loader->add_action( 'init', $plugin_public, 'register_block' );
+
 	}
 
 	/**
@@ -260,53 +284,4 @@ class WP_3D_Model_Viewer {
 		return $this->version;
 	}
 
-	/**
-	 * Enable 3D model file uploads by adding MIME types.
-	 *
-	 * @since     1.0.0
-	 */
-	private function enable_3d_model_uploads() {
-		$this->loader->add_filter( 'upload_mimes', $this, 'add_3d_model_mime_types' );
-	}
-
-	/**
-	 * Add 3D model MIME types to allowed uploads.
-	 *
-	 * @since    1.0.0
-	 * @param    array $mimes    Existing allowed MIME types.
-	 * @return   array           Modified MIME types.
-	 */
-	public function add_3d_model_mime_types( $mimes ) {
-		
-		// Get plugin settings to determine which MIME types to enable
-		$options = get_option( 'wp_3d_model_viewer_options' );
-		$allowed_mime_types = isset( $options['allowed_mime_types'] ) ? $options['allowed_mime_types'] : array();
-
-		// If no settings exist yet, enable GLB and GLTF by default
-		if ( empty( $allowed_mime_types ) ) {
-			$allowed_mime_types = array( 'model/gltf-binary', 'model/gltf+json' );
-		}
-
-		// Map MIME types to file extensions
-		$mime_map = array(
-			'model/gltf+json'          => array( 'gltf' ),
-			'model/gltf-binary'        => array( 'glb' ),
-			'application/octet-stream' => array( 'obj' ),
-			'application/x-tgif'       => array( 'fbx' ),
-			'model/vnd.collada+xml'    => array( 'dae' ),
-			'model/vnd.usdz+zip'       => array( 'usdz' ),
-			'model/vnd.pixar.usd'      => array( 'usd' ),
-		);
-
-		// Add enabled MIME types to WordPress upload allowlist
-		foreach ( $allowed_mime_types as $mime_type ) {
-			if ( isset( $mime_map[ $mime_type ] ) ) {
-				foreach ( $mime_map[ $mime_type ] as $extension ) {
-					$mimes[ $extension ] = $mime_type;
-				}
-			}
-		}
-
-		return $mimes;
-	}
 }

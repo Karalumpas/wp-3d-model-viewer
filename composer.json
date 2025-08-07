@@ -50,7 +50,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "phpcs": "phpcs --standard=WordPress src/",
+        "phpcs": "phpcs --standard=WordPress wp-3d-model-viewer.php uninstall.php",
         "phpcbf": "phpcbf --standard=WordPress src/",
         "post-install-cmd": [
             "@php -r \"file_exists('phpcs.xml') || copy('phpcs.xml.dist', 'phpcs.xml');\""

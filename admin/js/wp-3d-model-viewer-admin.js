@@ -30,10 +30,10 @@
 	 */
 
 	$(function() {
-		
-		// Initialize admin functionality
-		WP3DModelViewerAdmin.init();
-		
+		// Initialize admin functionality when DOM is ready
+		if (typeof WP3DModelViewerAdmin !== 'undefined') {
+			WP3DModelViewerAdmin.init();
+		}
 	});
 
 	/**
@@ -145,7 +145,7 @@
 			}
 
 			// Validate file size
-			const maxFileSize = parseInt($('#max_file_size').val());
+			const maxFileSize = parseInt($('#max_file_size').val(), 10);
 			if (maxFileSize < 1048576 || maxFileSize > 104857600) {
 				errors.push('File size must be between 1MB and 100MB.');
 				isValid = false;
@@ -207,7 +207,7 @@
 		 */
 		formatFileSize: function() {
 			const $input = $(this);
-			const value = parseInt($input.val());
+			const value = parseInt($input.val(), 10);
 			const $display = $input.siblings('.file-size-display');
 			
 			if (value) {

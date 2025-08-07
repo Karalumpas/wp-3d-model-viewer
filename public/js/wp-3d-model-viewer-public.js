@@ -29,21 +29,6 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
-	$(function() {
-		
-		// Initialize public functionality when DOM is ready
-		WP3DModelViewer.init();
-		
-	});
-
-	// Also initialize when model-viewer library is ready
-	document.addEventListener('DOMContentLoaded', function() {
-		// Double-check initialization in case jQuery isn't available
-		if (typeof WP3DModelViewer !== 'undefined') {
-			WP3DModelViewer.init();
-		}
-	});
-
 	/**
 	 * WP 3D Model Viewer Public JavaScript
 	 */
@@ -474,6 +459,19 @@
 			}
 		}
 	};
+
+	// Initialize when DOM is ready
+	$(function() {
+		WP3DModelViewer.init();
+	});
+
+	// Also initialize when model-viewer library is ready
+	document.addEventListener('DOMContentLoaded', function() {
+		// Double-check initialization in case jQuery isn't available
+		if (typeof WP3DModelViewer !== 'undefined') {
+			WP3DModelViewer.init();
+		}
+	});
 
 	// Expose to global scope for external access
 	window.WP3DModelViewer = WP3DModelViewer;

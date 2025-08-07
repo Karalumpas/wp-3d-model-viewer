@@ -142,4 +142,51 @@ powershell -command "Compress-Archive -Path '.\*' -DestinationPath '.\wp-3d-mode
 - Test zip installation process
 
 When working on this project, prioritize WordPress best practices, 3D model performance, and cross-platform compatibility. Always test changes in multiple browsers and consider the end-user experience for both site administrators and visitors.
+
+## MANDATORY: WordPress Plugin Packaging After Code Changes
+
+**CRITICAL REQUIREMENT**: After making ANY code changes, you MUST automatically create a WordPress-ready zip file.
+
+### Automatic Packaging Process
+
+1. **Check for existing zip file and delete it:**
+```powershell
+if (Test-Path "wp-3d-model-viewer.zip") { Remove-Item "wp-3d-model-viewer.zip" -Force }
+```
+
+2. **Create new zip file excluding development files:**
+```powershell
+$excludeFiles = @('.git*', '.github', 'node_modules', '*.md', '*.log', '.DS_Store', 'Thumbs.db', 'wp-3d-model-viewer-*.zip')
+Get-ChildItem -Path "." -Exclude $excludeFiles | Compress-Archive -DestinationPath "wp-3d-model-viewer.zip" -Force
+```
+
+3. **Verify zip contents include:**
+- Main plugin file: `wp-3d-model-viewer.php`
+- All PHP classes in `includes/`, `admin/`, `public/`
+- All CSS/JS assets
+- Language files if present
+- License and index.php files
+
+4. **Always notify completion with:**
+```
+✅ DEPLOYMENT READY: wp-3d-model-viewer.zip created successfully!
+📦 File size: [display actual file size in KB/MB]
+🚀 Ready for WordPress installation via Plugins → Add New → Upload Plugin
+📁 Extracted folder will be named: wp-3d-model-viewer
+```
+
+### Package Requirements
+- **Zip filename**: MUST be exactly `wp-3d-model-viewer.zip`
+- **Extracted folder**: MUST be named `wp-3d-model-viewer` (for WordPress plugin directory)
+- **Contents**: Only WordPress-necessary files (no development files)
+- **Testing**: Verify the zip installs properly in WordPress
+
+### Success Criteria for Every Task
+- ✅ Functional, tested code changes
+- ✅ WordPress coding standards compliance
+- ✅ Security best practices implemented
+- ✅ Fresh `wp-3d-model-viewer.zip` file created and verified
+- ✅ User notification with file details
+
+**Remember: NO CODE CHANGE IS COMPLETE without creating the WordPress plugin package!**
 ```

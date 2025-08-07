@@ -10,20 +10,25 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
 
 ## Admin Interface
 
-### **🎯 NEW: Live 3D Model Preview**
+### **🎯 NEW: Interactive 3D Model Preview & Settings**
 When editing a 3D model in WordPress admin, you'll see:
 
-1. **3D Model Preview** (Top metabox) - Live interactive preview of your model
+1. **Integrated 3D Model Preview** (Top metabox) - Live interactive preview with built-in settings panel
+   - **Real-time settings controls** - Change background color, camera position, auto-rotate, controls, and AR right in the preview
+   - **Interactive preview** - Drag to rotate, scroll to zoom, double-click to reset view
+   - **Quick action buttons** - Refresh preview, reset camera, copy settings, reset to defaults
+   - **Visual feedback** - Changes are applied instantly to the preview
+   
 2. **3D Model File** - Upload your GLB/GLTF files  
-3. **3D Model Settings** - Configure viewer options
+3. **Advanced Settings** - Fine-tune zoom level, loading behavior, and AR modes
 4. **Shortcode Usage** - Copy shortcode for use in posts/pages
 
-### **Interactive Preview Controls**
-- **Drag to rotate** the model
-- **Scroll to zoom** in and out
-- **Refresh Preview** button to reload the model
-- **Reset Camera** button to return to default view
-- **Auto-rotation** for better viewing
+### **Integrated Settings Panel Features**
+- **Background Color Picker** - Visual color selection with live preview
+- **Camera Position Control** - Set initial camera angle with real-time updates
+- **Viewer Options Toggles** - Enable/disable auto-rotate, camera controls, and AR support
+- **Quick Actions** - Reset to defaults, copy current settings to clipboard
+- **Auto-save** - All changes are automatically saved as you work
 
 ## Usage
 
@@ -109,18 +114,30 @@ When editing a 3D model in WordPress admin, you'll see:
 1. **Go to WordPress Admin** → **3D Models** → **Add New**
 2. **Enter a title** for your 3D model
 3. **Upload model file** in the "3D Model File" section
-4. **Preview appears automatically** at the top - interact with your model!
-5. **Configure settings** like background color, camera controls, AR
-6. **Copy the shortcode** and use it in posts/pages
+4. **Interactive preview appears automatically** at the top with integrated settings panel
+5. **Configure settings in real-time**:
+   - **Background Color**: Click the color picker to change background instantly
+   - **Camera Position**: Enter rotation values or use the preview to find the perfect angle
+   - **Auto-rotate**: Toggle on/off to see immediate effect
+   - **Camera Controls**: Enable/disable user interaction
+   - **AR Support**: Toggle AR capabilities on/off
+6. **Use Quick Actions**:
+   - **Refresh Preview**: Reload the model if needed
+   - **Reset Camera**: Return to default viewing angle
+   - **Reset to Defaults**: Clear all custom settings
+   - **Copy Settings**: Save current configuration to clipboard
+7. **Copy the shortcode** and use it in posts/pages
 
-### The Preview System
+### The Integrated Preview System
 
-The **3D Model Preview** metabox shows at the top and provides:
-- **Real-time 3D preview** of uploaded models
-- **Interactive controls** for testing the model
-- **Loading animations** and error handling
-- **Refresh/Reset buttons** for preview control
-- **Visual instructions** for users
+The **3D Model Preview with Settings** metabox provides:
+- **Real-time 3D preview** of uploaded models with live settings updates
+- **Integrated settings panel** directly below the preview for immediate testing
+- **Interactive controls** for hands-on model examination
+- **Visual feedback** - see changes applied instantly
+- **Auto-save functionality** - changes are saved automatically
+- **Professional interface** - modern design with responsive layout
+- **Error handling** with clear feedback and loading states
 
 ## File Format Support
 - **GLB** (recommended) - Binary GLTF format
@@ -140,8 +157,15 @@ The **3D Model Preview** metabox shows at the top and provides:
 ### Model Not Loading in Admin Preview?
 1. Check that the model file is properly uploaded
 2. Verify file format is GLB or GLTF
-3. Use the "Refresh Preview" button
+3. Use the "Refresh Preview" button in the top-right corner of the preview
 4. Check browser console for errors
+5. Try changing the background color to ensure the model isn't hidden
+
+### Settings Not Updating in Preview?
+1. Ensure JavaScript is enabled in your browser
+2. Check for console errors that might block functionality
+3. Try refreshing the entire admin page
+4. Use the "Reset to Defaults" button and reconfigure settings
 
 ### Model Not Loading on Frontend?
 1. Check that the model URL is accessible

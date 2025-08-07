@@ -416,23 +416,195 @@
  * These are called from inline onclick handlers in the PHP
  */
 function wp3dRefreshPreview() {
-	const $modelViewer = jQuery('#wp3d-admin-preview-container model-viewer');
-	if ($modelViewer.length) {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer) {
 		// Force reload by temporarily removing and re-adding src
-		const src = $modelViewer.attr('src');
-		$modelViewer.removeAttr('src');
+		const src = modelViewer.src;
+		modelViewer.src = '';
 		setTimeout(() => {
-			$modelViewer.attr('src', src);
+			modelViewer.src = src + '?refresh=' + Date.now();
 		}, 100);
+		
+		showAdminNotice('Preview refreshed!', 'info');
 	}
 }
 
 function wp3dResetCamera() {
-	const modelViewer = document.querySelector('#wp3d-admin-preview-container model-viewer');
-	if (modelViewer && modelViewer.resetTurntableRotation) {
-		modelViewer.resetTurntableRotation();
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer) {
+		modelViewer.setAttribute('camera-orbit', '0deg 75deg 105%');
+		jQuery('#wp3d_start_rotation_preview').val('0deg 75deg 105%');
+		
+		showAdminNotice('Camera reset!', 'info');
 	}
-	if (modelViewer && modelViewer.jumpCameraToGoal) {
-		modelViewer.jumpCameraToGoal();
+}
+
+/**
+ * Update preview background color in real-time
+ */
+function updatePreviewBackground(color) {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer) {
+		modelViewer.style.backgroundColor = color;
 	}
+	
+	// Update the color value display
+	jQuery('.wp3d-color-value').text(color);
+	
+	// Auto-save changes
+	debounceAutoSave();
+}
+
+/**
+ * Update preview camera position in real-time
+ */
+function updatePreviewCamera(rotation) {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer && rotation.trim()) {
+		modelViewer.setAttribute('camera-orbit', rotation);
+	}
+	
+	// Auto-save changes
+	debounceAutoSave();
+}
+
+/**
+ * Update preview auto-rotate in real-time
+ */
+function updatePreviewAutoRotate(enabled) {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer) {
+		if (enabled) {
+			modelViewer.setAttribute('auto-rotate', '');
+		} else {
+			modelViewer.removeAttribute('auto-rotate');
+		}
+	}
+	
+	// Auto-save changes
+	debounceAutoSave();
+}
+
+/**
+ * Update preview camera controls in real-time
+ */
+function updatePreviewControls(enabled) {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer) {
+		modelViewer.setAttribute('camera-controls', enabled ? 'true' : 'false');
+	}
+	
+	// Auto-save changes
+	debounceAutoSave();
+}
+
+/**
+ * Update preview AR setting in real-time
+ */
+function updatePreviewAR(enabled) {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (modelViewer) {
+		if (enabled) {
+			modelViewer.setAttribute('ar', '');
+			modelViewer.setAttribute('ar-modes', 'webxr scene-viewer quick-look');
+		} else {
+			modelViewer.removeAttribute('ar');
+			modelViewer.removeAttribute('ar-modes');
+		}
+	}
+	
+	// Auto-save changes
+	debounceAutoSave();
+}
+
+/**
+ * Reset preview to defaults
+ */
+function resetPreviewToDefaults() {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (!modelViewer) return;
+
+	// Reset values
+	modelViewer.style.backgroundColor = '#ffffff';
+	modelViewer.setAttribute('camera-orbit', '0deg 75deg 105%');
+	modelViewer.removeAttribute('auto-rotate');
+	modelViewer.setAttribute('camera-controls', 'true');
+	modelViewer.removeAttribute('ar');
+
+	// Update form fields
+	jQuery('#wp3d_bg_color_preview').val('#ffffff');
+	jQuery('#wp3d_start_rotation_preview').val('0deg 75deg 105%');
+	jQuery('#wp3d_auto_rotate_preview').prop('checked', false);
+	jQuery('#wp3d_camera_controls_preview').prop('checked', true);
+	jQuery('#wp3d_ar_enabled_preview').prop('checked', false);
+	jQuery('.wp3d-color-value').text('#ffffff');
+
+	showAdminNotice('Settings reset to defaults!', 'success');
+	
+	// Auto-save changes
+	debounceAutoSave();
+}
+
+/**
+ * Copy current settings to clipboard
+ */
+function copyCurrentSettings() {
+	const modelViewer = document.querySelector('#wp3d-main-preview');
+	if (!modelViewer) return;
+
+	const settings = {
+		backgroundColor: modelViewer.style.backgroundColor || '#ffffff',
+		cameraOrbit: modelViewer.getAttribute('camera-orbit') || '0deg 75deg 105%',
+		autoRotate: modelViewer.hasAttribute('auto-rotate'),
+		cameraControls: modelViewer.getAttribute('camera-controls') !== 'false',
+		ar: modelViewer.hasAttribute('ar')
+	};
+
+	const settingsText = `3D Model Settings:
+Background: ${settings.backgroundColor}
+Camera: ${settings.cameraOrbit}
+Auto-rotate: ${settings.autoRotate ? 'Yes' : 'No'}
+Controls: ${settings.cameraControls ? 'Yes' : 'No'}
+AR: ${settings.ar ? 'Yes' : 'No'}`;
+
+	// Try to copy to clipboard
+	if (navigator.clipboard) {
+		navigator.clipboard.writeText(settingsText).then(() => {
+			showAdminNotice('Settings copied to clipboard!', 'success');
+		});
+	} else {
+		// Fallback for older browsers
+		const textArea = document.createElement('textarea');
+		textArea.value = settingsText;
+		document.body.appendChild(textArea);
+		textArea.select();
+		document.execCommand('copy');
+		document.body.removeChild(textArea);
+		showAdminNotice('Settings copied to clipboard!', 'success');
+	}
+}
+
+/**
+ * Show admin notice
+ */
+function showAdminNotice(message, type = 'info') {
+	const notice = jQuery(`<div class="notice notice-${type} is-dismissible wp3d-temp-notice"><p>${message}</p></div>`);
+	jQuery('.wp-header-end').after(notice);
+	
+	setTimeout(() => {
+		notice.fadeOut(() => notice.remove());
+	}, 3000);
+}
+
+/**
+ * Debounced auto-save function
+ */
+let autoSaveTimeout;
+function debounceAutoSave() {
+	clearTimeout(autoSaveTimeout);
+	autoSaveTimeout = setTimeout(() => {
+		if (typeof wp !== 'undefined' && wp.autosave && wp.autosave.server) {
+			wp.autosave.server.triggerSave();
+		}
+	}, 1000);
 }

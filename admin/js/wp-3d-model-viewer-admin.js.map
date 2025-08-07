@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/cpt.js", "src/settings.js", "src/admin.js"],
+  "sourcesContent": ["/**\n * WP 3D Model Viewer - CPT Admin JavaScript\n * Handles custom post type admin functionality\n * \n * @package WP_3D_Model_Viewer\n * @version 2.0.0\n */\n\nconsole.log('CPT JS loaded');", "/**\n * WP 3D Model Viewer - Settings Page JavaScript\n * Handles settings page functionality\n * \n * @package WP_3D_Model_Viewer\n * @version 2.0.0\n */\n\nconsole.log('Settings JS loaded');", "/**\n * WP 3D Model Viewer - Main Admin JavaScript\n * Entry point for all admin JavaScript functionality\n * \n * @package WP_3D_Model_Viewer\n * @version 2.0.0\n */\n\n// Import existing functionality\nimport './cpt.js';\nimport './settings.js';\n\nconsole.log('WP 3D Model Viewer admin JS loaded');"],
+  "mappings": ";;AAQA,UAAQ,IAAI,eAAe;;;ACA3B,UAAQ,IAAI,oBAAoB;;;ACIhC,UAAQ,IAAI,oCAAoC;",
+  "names": []
+}

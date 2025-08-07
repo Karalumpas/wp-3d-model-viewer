@@ -309,8 +309,10 @@ class WP_3D_Model_Viewer_Public {
 
 		// Get model settings from post meta
 		$bg_color = get_post_meta( $post_id, '_wp3d_bg_color', true ) ?: '#ffffff';
-		$start_rotation = get_post_meta( $post_id, '_wp3d_start_rotation', true ) ?: '0deg 0deg 0deg';
-		$zoom_level = get_post_meta( $post_id, '_wp3d_zoom_level', true ) ?: '1';
+		$start_rotation = get_post_meta( $post_id, '_wp3d_start_rotation', true ) ?: '0deg 75deg 105%';
+		$camera_orbit = get_post_meta( $post_id, '_wp3d_camera_orbit', true ) ?: $start_rotation;
+		$camera_target = get_post_meta( $post_id, '_wp3d_camera_target', true ) ?: 'auto auto auto';
+		$zoom_level = get_post_meta( $post_id, '_wp3d_zoom_level', true ) ?: '75';
 		$ar_enabled = get_post_meta( $post_id, '_wp3d_ar_enabled', true );
 		$auto_rotate = get_post_meta( $post_id, '_wp3d_auto_rotate', true );
 		$camera_controls = get_post_meta( $post_id, '_wp3d_camera_controls', true );
@@ -362,8 +364,17 @@ class WP_3D_Model_Viewer_Public {
 		);
 		
 		// Camera and interaction attributes
-		if ( $start_rotation && $start_rotation !== '0deg 0deg 0deg' ) {
-			$model_attributes['camera-orbit'] = esc_attr( $start_rotation );
+		if ( $camera_orbit && $camera_orbit !== '0deg 75deg 105%' ) {
+			$model_attributes['camera-orbit'] = esc_attr( $camera_orbit );
+		}
+		
+		if ( $camera_target && $camera_target !== 'auto auto auto' ) {
+			$model_attributes['camera-target'] = esc_attr( $camera_target );
+		}
+		
+		// Field of view (zoom level)
+		if ( $zoom_level && $zoom_level !== '75' ) {
+			$model_attributes['field-of-view'] = esc_attr( $zoom_level . 'deg' );
 		}
 		
 		if ( $auto_rotate ) {

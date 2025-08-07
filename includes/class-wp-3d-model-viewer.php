@@ -159,12 +159,9 @@ class WP_3D_Model_Viewer {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_init' );
 
-								// Add settings page.
-				$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );
-
-				// Add Settings link to the plugin.
+		// Add settings page.
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );				// Add Settings link to the plugin.
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . 'wp-3d-model-viewer.php' );
 		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
 

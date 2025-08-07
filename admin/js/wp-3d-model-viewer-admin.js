@@ -50,7 +50,6 @@
 			this.initColorPickers();
 			this.initModelViewer();
 			this.initPreviewControls();
-		},
 			this.initFileTypeToggle();
 		},
 

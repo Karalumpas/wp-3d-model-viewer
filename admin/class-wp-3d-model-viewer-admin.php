@@ -246,12 +246,13 @@ class WP_3D_Model_Viewer_Admin {
 			'wp_3d_model_viewer_advanced'
 		);
 
-		add_settings_field(
-			'enable_ar_by_default',
-			__( 'Enable AR by Default', 'wp-3d-model-viewer' ),
-			array( $this, 'ar_default_field_callback' ),
-			'wp-3d-model-viewer',
-		);
+	   add_settings_field(
+		   'enable_ar_by_default',
+		   __( 'Enable AR by Default', 'wp-3d-model-viewer' ),
+		   array( $this, 'ar_default_field_callback' ),
+		   'wp-3d-model-viewer',
+		   'wp_3d_model_viewer_advanced'
+	   );
 	}
 
 	/**

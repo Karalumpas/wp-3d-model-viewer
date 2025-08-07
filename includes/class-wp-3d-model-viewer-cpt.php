@@ -326,82 +326,219 @@ class WP_3D_Model_Viewer_CPT {
 		// Get current values
 		$bg_color = get_post_meta( $post->ID, '_wp3d_bg_color', true );
 		$start_rotation = get_post_meta( $post->ID, '_wp3d_start_rotation', true );
+		$camera_orbit = get_post_meta( $post->ID, '_wp3d_camera_orbit', true );
+		$camera_target = get_post_meta( $post->ID, '_wp3d_camera_target', true );
 		$zoom_level = get_post_meta( $post->ID, '_wp3d_zoom_level', true );
 		$ar_enabled = get_post_meta( $post->ID, '_wp3d_ar_enabled', true );
 		$auto_rotate = get_post_meta( $post->ID, '_wp3d_auto_rotate', true );
 		$camera_controls = get_post_meta( $post->ID, '_wp3d_camera_controls', true );
+		$model_file = get_post_meta( $post->ID, '_wp3d_model_file', true );
 
 		// Set defaults
 		if ( empty( $bg_color ) ) $bg_color = '#ffffff';
-		if ( empty( $start_rotation ) ) $start_rotation = '0deg 0deg 0deg';
+		if ( empty( $start_rotation ) ) $start_rotation = '0deg 75deg 105%';
+		if ( empty( $camera_orbit ) ) $camera_orbit = '0deg 75deg 105%';
+		if ( empty( $camera_target ) ) $camera_target = 'auto auto auto';
 		if ( empty( $zoom_level ) ) $zoom_level = '1';
 		if ( $camera_controls === '' ) $camera_controls = '1';
 
 		?>
-		<table class="form-table">
-			<tr>
-				<th scope="row">
-					<label for="wp3d_bg_color"><?php _e( 'Background Color', 'wp-3d-model-viewer' ); ?></label>
-				</th>
-				<td>
-					<input type="color" id="wp3d_bg_color" name="wp3d_bg_color" value="<?php echo esc_attr( $bg_color ); ?>" />
-					<p class="description"><?php _e( 'Background color for the 3D model viewer', 'wp-3d-model-viewer' ); ?></p>
-				</td>
-			</tr>
-
-			<tr>
-				<th scope="row">
-					<label for="wp3d_start_rotation"><?php _e( 'Initial Camera Rotation', 'wp-3d-model-viewer' ); ?></label>
-				</th>
-				<td>
-					<input type="text" id="wp3d_start_rotation" name="wp3d_start_rotation" value="<?php echo esc_attr( $start_rotation ); ?>" class="regular-text" placeholder="0deg 75deg 105%" />
-					<p class="description"><?php _e( 'Initial camera rotation (theta phi radius). Example: 0deg 75deg 105%', 'wp-3d-model-viewer' ); ?></p>
-				</td>
-			</tr>
-
-			<tr>
-				<th scope="row">
-					<label for="wp3d_zoom_level"><?php _e( 'Initial Zoom Level', 'wp-3d-model-viewer' ); ?></label>
-				</th>
-				<td>
-					<input type="range" id="wp3d_zoom_level" name="wp3d_zoom_level" value="<?php echo esc_attr( $zoom_level ); ?>" min="0.1" max="5" step="0.1" />
-					<span class="wp3d-zoom-value"><?php echo esc_html( $zoom_level ); ?>x</span>
-					<p class="description"><?php _e( 'Initial zoom level for the 3D model viewer', 'wp-3d-model-viewer' ); ?></p>
-				</td>
-			</tr>
-
-			<tr>
-				<th scope="row"><?php _e( 'Viewer Controls', 'wp-3d-model-viewer' ); ?></th>
-				<td>
-					<fieldset>
-						<legend class="screen-reader-text"><span><?php _e( 'Viewer Controls', 'wp-3d-model-viewer' ); ?></span></legend>
+		<div class="wp3d-admin-settings">
+			<!-- Interactive 3D Model Preview Section -->
+			<?php if ( $model_file ) : ?>
+				<div class="wp3d-preview-section">
+					<h3><?php _e( 'Interactive Model Preview', 'wp-3d-model-viewer' ); ?></h3>
+					<p class="description"><?php _e( 'Use the preview below to position your 3D model. Rotate, zoom, and pan to find the perfect view, then click "Capture Current Position" to save it.', 'wp-3d-model-viewer' ); ?></p>
+					
+					<div class="wp3d-preview-container">
+						<model-viewer 
+							id="wp3d-admin-preview"
+							src="<?php echo esc_url( wp_get_attachment_url( $model_file ) ); ?>"
+							camera-controls
+							auto-rotate-delay="3000"
+							camera-orbit="<?php echo esc_attr( $camera_orbit ); ?>"
+							camera-target="<?php echo esc_attr( $camera_target ); ?>"
+							style="width: 100%; height: 400px; background-color: <?php echo esc_attr( $bg_color ); ?>; border-radius: 8px; border: 1px solid #ddd;"
+							loading="eager">
+							<div slot="progress-bar" style="display: none;"></div>
+						</model-viewer>
 						
-						<label for="wp3d_camera_controls">
-							<input type="checkbox" id="wp3d_camera_controls" name="wp3d_camera_controls" value="1" <?php checked( $camera_controls, '1' ); ?> />
-							<?php _e( 'Enable camera controls (zoom, pan, rotate)', 'wp-3d-model-viewer' ); ?>
-						</label>
-						<br><br>
+						<div class="wp3d-preview-controls">
+							<button type="button" id="wp3d-capture-position" class="button button-primary">
+								<span class="dashicons dashicons-camera"></span>
+								<?php _e( 'Capture Current Position', 'wp-3d-model-viewer' ); ?>
+							</button>
+							<button type="button" id="wp3d-reset-position" class="button">
+								<span class="dashicons dashicons-image-rotate"></span>
+								<?php _e( 'Reset to Default', 'wp-3d-model-viewer' ); ?>
+							</button>
+							<div class="wp3d-position-status">
+								<span class="wp3d-status-indicator" id="wp3d-status-indicator"></span>
+								<span id="wp3d-position-text"><?php _e( 'Position the model and click capture', 'wp-3d-model-viewer' ); ?></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr>
+			<?php else : ?>
+				<div class="wp3d-preview-section">
+					<h3><?php _e( 'Interactive Model Preview', 'wp-3d-model-viewer' ); ?></h3>
+					<div class="wp3d-no-model-notice">
+						<p><span class="dashicons dashicons-info"></span> <?php _e( 'Upload a 3D model file above to see the interactive preview and position controls.', 'wp-3d-model-viewer' ); ?></p>
+					</div>
+				</div>
+				<hr>
+			<?php endif; ?>
 
-						<label for="wp3d_auto_rotate">
-							<input type="checkbox" id="wp3d_auto_rotate" name="wp3d_auto_rotate" value="1" <?php checked( $auto_rotate, '1' ); ?> />
-							<?php _e( 'Enable auto-rotation', 'wp-3d-model-viewer' ); ?>
-						</label>
-						<br><br>
+			<table class="form-table">
+				<tr>
+					<th scope="row">
+						<label for="wp3d_bg_color"><?php _e( 'Background Color', 'wp-3d-model-viewer' ); ?></label>
+					</th>
+					<td>
+						<input type="color" id="wp3d_bg_color" name="wp3d_bg_color" value="<?php echo esc_attr( $bg_color ); ?>" />
+						<p class="description"><?php _e( 'Background color for the 3D model viewer', 'wp-3d-model-viewer' ); ?></p>
+					</td>
+				</tr>
 
-						<label for="wp3d_ar_enabled">
-							<input type="checkbox" id="wp3d_ar_enabled" name="wp3d_ar_enabled" value="1" <?php checked( $ar_enabled, '1' ); ?> />
-							<?php _e( 'Enable Augmented Reality (AR) support', 'wp-3d-model-viewer' ); ?>
-						</label>
-					</fieldset>
-				</td>
-			</tr>
-		</table>
+				<tr>
+					<th scope="row">
+						<label for="wp3d_camera_orbit"><?php _e( 'Camera Position', 'wp-3d-model-viewer' ); ?></label>
+					</th>
+					<td>
+						<input type="text" id="wp3d_camera_orbit" name="wp3d_camera_orbit" value="<?php echo esc_attr( $camera_orbit ); ?>" class="regular-text" readonly />
+						<input type="hidden" id="wp3d_camera_target" name="wp3d_camera_target" value="<?php echo esc_attr( $camera_target ); ?>" />
+						<input type="hidden" id="wp3d_start_rotation" name="wp3d_start_rotation" value="<?php echo esc_attr( $start_rotation ); ?>" />
+						<p class="description"><?php _e( 'Camera orbit position (automatically captured from preview above)', 'wp-3d-model-viewer' ); ?></p>
+					</td>
+				</tr>
+
+				<tr>
+					<th scope="row">
+						<label for="wp3d_zoom_level"><?php _e( 'Field of View', 'wp-3d-model-viewer' ); ?></label>
+					</th>
+					<td>
+						<input type="range" id="wp3d_zoom_level" name="wp3d_zoom_level" value="<?php echo esc_attr( $zoom_level ); ?>" min="10" max="120" step="1" />
+						<span class="wp3d-zoom-value"><?php echo esc_html( $zoom_level ); ?>°</span>
+						<p class="description"><?php _e( 'Field of view angle in degrees (10° = zoomed in, 120° = zoomed out)', 'wp-3d-model-viewer' ); ?></p>
+					</td>
+				</tr>
+
+				<tr>
+					<th scope="row"><?php _e( 'Viewer Controls', 'wp-3d-model-viewer' ); ?></th>
+					<td>
+						<fieldset>
+							<legend class="screen-reader-text"><span><?php _e( 'Viewer Controls', 'wp-3d-model-viewer' ); ?></span></legend>
+							
+							<label for="wp3d_camera_controls">
+								<input type="checkbox" id="wp3d_camera_controls" name="wp3d_camera_controls" value="1" <?php checked( $camera_controls, '1' ); ?> />
+								<?php _e( 'Enable camera controls (zoom, pan, rotate)', 'wp-3d-model-viewer' ); ?>
+							</label>
+							<br><br>
+
+							<label for="wp3d_auto_rotate">
+								<input type="checkbox" id="wp3d_auto_rotate" name="wp3d_auto_rotate" value="1" <?php checked( $auto_rotate, '1' ); ?> />
+								<?php _e( 'Enable auto-rotation', 'wp-3d-model-viewer' ); ?>
+							</label>
+							<br><br>
+
+							<label for="wp3d_ar_enabled">
+								<input type="checkbox" id="wp3d_ar_enabled" name="wp3d_ar_enabled" value="1" <?php checked( $ar_enabled, '1' ); ?> />
+								<?php _e( 'Enable Augmented Reality (AR) support', 'wp-3d-model-viewer' ); ?>
+							</label>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<style>
+		.wp3d-admin-settings .wp3d-preview-section {
+			margin-bottom: 20px;
+		}
+		
+		.wp3d-preview-container {
+			background: #f9f9f9;
+			padding: 20px;
+			border-radius: 8px;
+			border: 1px solid #ddd;
+		}
+		
+		.wp3d-preview-controls {
+			margin-top: 15px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
+		
+		.wp3d-preview-controls .button .dashicons {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			margin-right: 5px;
+		}
+		
+		.wp3d-position-status {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-left: auto;
+			font-size: 14px;
+		}
+		
+		.wp3d-status-indicator {
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			background: #ddd;
+			transition: background-color 0.3s ease;
+		}
+		
+		.wp3d-status-indicator.captured {
+			background: #46b450;
+		}
+		
+		.wp3d-status-indicator.modified {
+			background: #ffb900;
+		}
+		
+		#wp3d-admin-preview {
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+		}
+		
+		@media (max-width: 782px) {
+			.wp3d-preview-controls {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			
+			.wp3d-position-status {
+				margin-left: 0;
+				justify-content: center;
+			}
+		}
+		</style>
 
 		<script>
 		jQuery(document).ready(function($) {
 			// Update zoom level display
 			$('#wp3d_zoom_level').on('input', function() {
-				$('.wp3d-zoom-value').text($(this).val() + 'x');
+				$('.wp3d-zoom-value').text($(this).val() + '°');
+				
+				// Update the preview model's field-of-view
+				const preview = document.getElementById('wp3d-admin-preview');
+				if (preview) {
+					preview.setAttribute('field-of-view', $(this).val() + 'deg');
+				}
+			});
+			
+			// Update background color in real-time
+			$('#wp3d_bg_color').on('input', function() {
+				const preview = document.getElementById('wp3d-admin-preview');
+				if (preview) {
+					preview.style.backgroundColor = $(this).val();
+				}
 			});
 		});
 		</script>
@@ -495,14 +632,21 @@ class WP_3D_Model_Viewer_CPT {
 
 		// Save settings
 		$bg_color = isset( $_POST['wp3d_bg_color'] ) ? sanitize_hex_color( $_POST['wp3d_bg_color'] ) : '#ffffff';
-		$start_rotation = isset( $_POST['wp3d_start_rotation'] ) ? sanitize_text_field( $_POST['wp3d_start_rotation'] ) : '0deg 0deg 0deg';
-		$zoom_level = isset( $_POST['wp3d_zoom_level'] ) ? floatval( $_POST['wp3d_zoom_level'] ) : 1;
+		$start_rotation = isset( $_POST['wp3d_start_rotation'] ) ? sanitize_text_field( $_POST['wp3d_start_rotation'] ) : '0deg 75deg 105%';
+		$camera_orbit = isset( $_POST['wp3d_camera_orbit'] ) ? sanitize_text_field( $_POST['wp3d_camera_orbit'] ) : '0deg 75deg 105%';
+		$camera_target = isset( $_POST['wp3d_camera_target'] ) ? sanitize_text_field( $_POST['wp3d_camera_target'] ) : 'auto auto auto';
+		$zoom_level = isset( $_POST['wp3d_zoom_level'] ) ? intval( $_POST['wp3d_zoom_level'] ) : 75;
 		$ar_enabled = isset( $_POST['wp3d_ar_enabled'] ) ? '1' : '0';
 		$auto_rotate = isset( $_POST['wp3d_auto_rotate'] ) ? '1' : '0';
 		$camera_controls = isset( $_POST['wp3d_camera_controls'] ) ? '1' : '0';
 
+		// Ensure zoom level is within valid range
+		$zoom_level = max( 10, min( 120, $zoom_level ) );
+
 		update_post_meta( $post_id, '_wp3d_bg_color', $bg_color );
 		update_post_meta( $post_id, '_wp3d_start_rotation', $start_rotation );
+		update_post_meta( $post_id, '_wp3d_camera_orbit', $camera_orbit );
+		update_post_meta( $post_id, '_wp3d_camera_target', $camera_target );
 		update_post_meta( $post_id, '_wp3d_zoom_level', $zoom_level );
 		update_post_meta( $post_id, '_wp3d_ar_enabled', $ar_enabled );
 		update_post_meta( $post_id, '_wp3d_auto_rotate', $auto_rotate );
@@ -520,7 +664,9 @@ class WP_3D_Model_Viewer_CPT {
 		
 		if ( $post_type === $this->post_type ) {
 			wp_enqueue_media();
-			wp_enqueue_script( 'wp3d-admin-cpt', plugin_dir_url( __FILE__ ) . '../admin/js/wp-3d-model-viewer-cpt.js', array( 'jquery' ), '1.0.0', true );
+			
+			// Enqueue our enhanced CPT admin script with 3D preview functionality
+			wp_enqueue_script( 'wp3d-admin-cpt', plugin_dir_url( __FILE__ ) . '../admin/js/wp-3d-model-viewer-admin.js', array( 'jquery' ), '2.0.0', true );
 		}
 	}
 

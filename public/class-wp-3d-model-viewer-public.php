@@ -205,6 +205,17 @@ class WP_3D_Model_Viewer_Public {
 			'ios_src'          => '',
 			'class'            => '',
 			'viewer_id'        => '',        // HTML element ID
+			
+			// New customization attributes
+			'show_label'       => 'true',
+			'label_text'       => '',
+			'label_position'   => 'top-left',
+			'label_color'      => 'rgba(0, 115, 170, 0.9)',
+			'ar_position'      => 'bottom-left',
+			'ar_color'         => 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+			'show_border'      => 'true',
+			'border_color'     => '#0073aa',
+			'border_width'     => '2',
 		);
 
 		// Parse attributes
@@ -240,11 +251,35 @@ class WP_3D_Model_Viewer_Public {
 		$ios_src = esc_url( $atts['ios_src'] );
 		$class = sanitize_html_class( $atts['class'] );
 		$viewer_id = sanitize_html_class( $atts['viewer_id'] );
+		
+		// Sanitize customization attributes
+		$show_label = $this->parse_boolean( $atts['show_label'] );
+		$label_text = sanitize_text_field( $atts['label_text'] );
+		$label_position = sanitize_text_field( $atts['label_position'] );
+		$label_color = sanitize_text_field( $atts['label_color'] );
+		$ar_position = sanitize_text_field( $atts['ar_position'] );
+		$ar_color = sanitize_text_field( $atts['ar_color'] );
+		$show_border = $this->parse_boolean( $atts['show_border'] );
+		$border_color = sanitize_hex_color( $atts['border_color'] ) ?: sanitize_text_field( $atts['border_color'] );
+		$border_width = absint( $atts['border_width'] );
 
 		// Build CSS classes
 		$css_classes = array( 'wp3d-viewer' );
 		if ( ! empty( $class ) ) {
 			$css_classes[] = $class;
+		}
+		
+		// Add customization classes for direct shortcode
+		if ( $show_border ) {
+			$css_classes[] = 'wp3d-has-border';
+		}
+		if ( $show_label && ! empty( $label_text ) ) {
+			$css_classes[] = 'wp3d-has-label';
+			$css_classes[] = 'wp3d-label-' . str_replace( '-', '_', $label_position );
+		}
+		if ( $ar ) {
+			$css_classes[] = 'wp3d-has-ar';
+			$css_classes[] = 'wp3d-ar-' . str_replace( '-', '_', $ar_position );
 		}
 
 		// Build model-viewer attributes
@@ -296,7 +331,97 @@ class WP_3D_Model_Viewer_Public {
 		}
 		$html .= '</div>';
 		
+		// Add AR button if enabled
+		if ( $ar ) {
+			$html .= '<button slot="ar-button" class="wp3d-ar-button wp3d-ar-' . str_replace( '-', '_', $ar_position ) . '" aria-label="View in AR">';
+			$html .= '<span class="wp3d-ar-icon">📱</span>';
+			$html .= '<span class="wp3d-ar-text">View in AR</span>';
+			$html .= '</button>';
+		}
+		
 		$html .= '</model-viewer>';
+		
+		// Add custom label overlay if enabled
+		if ( $show_label && ! empty( $label_text ) ) {
+			$html .= '<div class="wp3d-model-label wp3d-label-' . str_replace( '-', '_', $label_position ) . '">';
+			$html .= esc_html( $label_text );
+			$html .= '</div>';
+		}
+
+		// Add custom CSS for styling
+		$html .= '<style>';
+		
+		// Border styling
+		if ( $show_border ) {
+			$html .= '#' . $viewer_id . ' { border: ' . $border_width . 'px solid ' . $border_color . '; }';
+		} else {
+			$html .= '#' . $viewer_id . ' { border: none; }';
+		}
+		
+		// Custom label styling
+		if ( $show_label && ! empty( $label_text ) ) {
+			$position_styles = '';
+			switch ( $label_position ) {
+				case 'top-left':
+					$position_styles = 'top: 10px; left: 10px;';
+					break;
+				case 'top-right':
+					$position_styles = 'top: 10px; right: 10px;';
+					break;
+				case 'bottom-left':
+					$position_styles = 'bottom: 10px; left: 10px;';
+					break;
+				case 'bottom-right':
+					$position_styles = 'bottom: 10px; right: 10px;';
+					break;
+			}
+			
+			$html .= '#' . $viewer_id . ' + .wp3d-model-label {';
+			$html .= 'position: absolute;';
+			$html .= $position_styles;
+			$html .= 'background: ' . $label_color . ';';
+			$html .= 'color: white;';
+			$html .= 'padding: 4px 8px;';
+			$html .= 'border-radius: 4px;';
+			$html .= 'font-size: 12px;';
+			$html .= 'font-weight: bold;';
+			$html .= 'z-index: 10;';
+			$html .= 'pointer-events: none;';
+			$html .= '}';
+		}
+		
+		// Custom AR button styling
+		if ( $ar ) {
+			$position_styles = '';
+			switch ( $ar_position ) {
+				case 'top-left':
+					$position_styles = 'top: 16px; left: 16px; bottom: auto; right: auto;';
+					break;
+				case 'top-right':
+					$position_styles = 'top: 16px; right: 16px; bottom: auto; left: auto;';
+					break;
+				case 'bottom-left':
+					$position_styles = 'bottom: 16px; left: 16px; top: auto; right: auto;';
+					break;
+				case 'bottom-right':
+					$position_styles = 'bottom: 16px; right: 16px; top: auto; left: auto;';
+					break;
+			}
+			
+			$html .= '#' . $viewer_id . ' .wp3d-ar-button {';
+			$html .= $position_styles;
+			$html .= 'background: ' . $ar_color . ';';
+			$html .= '}';
+		}
+		
+		$html .= '</style>';
+
+		// Wrap in container for proper positioning
+		$container_html = '<div class="wp3d-model-container" style="position: relative; display: inline-block; width: ' . $width . '; height: ' . $height . ';">';
+		$container_html .= $html;
+		$container_html .= '</div>';
+		
+		$html = $container_html;
 
 		// Add data attributes for JavaScript enhancement
 		$html .= '<script type="application/json" class="wp3d-config" data-for="' . $viewer_id . '">';
@@ -349,6 +474,21 @@ class WP_3D_Model_Viewer_Public {
 		$auto_rotate = get_post_meta( $post_id, '_wp3d_auto_rotate', true );
 		$camera_controls = get_post_meta( $post_id, '_wp3d_camera_controls', true );
 		
+		// Get appearance settings
+		$show_label = get_post_meta( $post_id, '_wp3d_show_label', true );
+		$label_text = get_post_meta( $post_id, '_wp3d_label_text', true ) ?: '3D Model';
+		$label_position = get_post_meta( $post_id, '_wp3d_label_position', true ) ?: 'top-left';
+		$label_color = get_post_meta( $post_id, '_wp3d_label_color', true ) ?: 'rgba(0, 115, 170, 0.9)';
+		$ar_position = get_post_meta( $post_id, '_wp3d_ar_position', true ) ?: 'bottom-left';
+		$ar_color = get_post_meta( $post_id, '_wp3d_ar_color', true ) ?: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+		$show_border = get_post_meta( $post_id, '_wp3d_show_border', true );
+		$border_color = get_post_meta( $post_id, '_wp3d_border_color', true ) ?: '#0073aa';
+		$border_width = get_post_meta( $post_id, '_wp3d_border_width', true ) ?: '2';
+		
+		// Set defaults for checkboxes if empty
+		if ( $show_label === '' ) $show_label = '1';
+		if ( $show_border === '' ) $show_border = '1';
+		
 		// Set default for camera_controls if empty (should be enabled by default)
 		if ( $camera_controls === '' ) {
 			$camera_controls = '1';
@@ -382,6 +522,19 @@ class WP_3D_Model_Viewer_Public {
 		$css_classes = array( 'wp3d-viewer', 'wp3d-cpt-model' );
 		if ( ! empty( $class ) ) {
 			$css_classes[] = $class;
+		}
+		
+		// Add customization classes
+		if ( $show_border && $show_border !== '0' ) {
+			$css_classes[] = 'wp3d-has-border';
+		}
+		if ( $show_label && $show_label !== '0' && ! empty( $label_text ) ) {
+			$css_classes[] = 'wp3d-has-label';
+			$css_classes[] = 'wp3d-label-' . str_replace( '-', '_', $label_position );
+		}
+		if ( $ar_enabled ) {
+			$css_classes[] = 'wp3d-has-ar';
+			$css_classes[] = 'wp3d-ar-' . str_replace( '-', '_', $ar_position );
 		}
 
 		// Build model-viewer attributes array for better organization
@@ -469,7 +622,7 @@ class WP_3D_Model_Viewer_Public {
 		
 		// Add AR button if enabled
 		if ( $ar_enabled ) {
-			$html .= '<button slot="ar-button" class="wp3d-ar-button" aria-label="View in AR">';
+			$html .= '<button slot="ar-button" class="wp3d-ar-button wp3d-ar-' . str_replace( '-', '_', $ar_position ) . '" aria-label="View in AR">';
 			$html .= '<span class="wp3d-ar-icon">📱</span>';
 			$html .= '<span class="wp3d-ar-text">View in AR</span>';
 			$html .= '</button>';
@@ -484,6 +637,93 @@ class WP_3D_Model_Viewer_Public {
 		$html .= '</div>';
 		
 		$html .= '</model-viewer>';
+		
+		// Add custom label overlay if enabled
+		if ( $show_label && $show_label !== '0' && ! empty( $label_text ) ) {
+			$html .= '<div class="wp3d-model-label wp3d-label-' . str_replace( '-', '_', $label_position ) . '">';
+			$html .= esc_html( $label_text );
+			$html .= '</div>';
+		}
+
+		// Add custom CSS for styling
+		$html .= '<style>';
+		
+		// Border styling
+		if ( $show_border && $show_border !== '0' ) {
+			$html .= '#' . $viewer_id . '.wp3d-cpt-model { border: ' . absint( $border_width ) . 'px solid ' . esc_attr( $border_color ) . '; }';
+		} else {
+			$html .= '#' . $viewer_id . '.wp3d-cpt-model { border: none; }';
+		}
+		
+		// Remove default label if custom label is used or hidden
+		if ( $show_label === '0' || ! empty( $label_text ) ) {
+			$html .= '#' . $viewer_id . '.wp3d-cpt-model::after { display: none; }';
+		}
+		
+		// Custom label styling
+		if ( $show_label && $show_label !== '0' && ! empty( $label_text ) ) {
+			$position_styles = '';
+			switch ( $label_position ) {
+				case 'top-left':
+					$position_styles = 'top: 10px; left: 10px;';
+					break;
+				case 'top-right':
+					$position_styles = 'top: 10px; right: 10px;';
+					break;
+				case 'bottom-left':
+					$position_styles = 'bottom: 10px; left: 10px;';
+					break;
+				case 'bottom-right':
+					$position_styles = 'bottom: 10px; right: 10px;';
+					break;
+			}
+			
+			$html .= '#' . $viewer_id . ' + .wp3d-model-label {';
+			$html .= 'position: absolute;';
+			$html .= $position_styles;
+			$html .= 'background: ' . esc_attr( $label_color ) . ';';
+			$html .= 'color: white;';
+			$html .= 'padding: 4px 8px;';
+			$html .= 'border-radius: 4px;';
+			$html .= 'font-size: 12px;';
+			$html .= 'font-weight: bold;';
+			$html .= 'z-index: 10;';
+			$html .= 'pointer-events: none;';
+			$html .= '}';
+		}
+		
+		// Custom AR button styling
+		if ( $ar_enabled ) {
+			$position_styles = '';
+			switch ( $ar_position ) {
+				case 'top-left':
+					$position_styles = 'top: 16px; left: 16px; bottom: auto; right: auto;';
+					break;
+				case 'top-right':
+					$position_styles = 'top: 16px; right: 16px; bottom: auto; left: auto;';
+					break;
+				case 'bottom-left':
+					$position_styles = 'bottom: 16px; left: 16px; top: auto; right: auto;';
+					break;
+				case 'bottom-right':
+					$position_styles = 'bottom: 16px; right: 16px; top: auto; left: auto;';
+					break;
+			}
+			
+			$html .= '#' . $viewer_id . ' .wp3d-ar-button {';
+			$html .= $position_styles;
+			$html .= 'background: ' . esc_attr( $ar_color ) . ';';
+			$html .= '}';
+		}
+		
+		$html .= '</style>';
+
+		// Wrap in container for proper positioning
+		$container_html = '<div class="wp3d-model-container" style="position: relative; display: inline-block; width: ' . $width . '; height: ' . $height . ';">';
+		$container_html .= $html;
+		$container_html .= '</div>';
+		
+		$html = $container_html;
 
 		// Add enhanced data attributes for JavaScript
 		$html .= '<script type="application/json" class="wp3d-model-config" data-model-id="' . $viewer_id . '">';

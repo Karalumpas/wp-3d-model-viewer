@@ -238,6 +238,19 @@ $settings = $admin->get_settings();
             <li><strong>ar</strong> - <?php _e( 'Enable AR support (true/false)', 'wp-3d-model-viewer' ); ?></li>
             <li><strong>ios_src</strong> - <?php _e( 'USDZ file URL for iOS AR support', 'wp-3d-model-viewer' ); ?></li>
         </ul>
+        
+        <h4><?php _e( 'Appearance Customization Parameters', 'wp-3d-model-viewer' ); ?></h4>
+        <ul>
+            <li><strong>show_label</strong> - <?php _e( 'Show/hide model label (true/false, default: true)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>label_text</strong> - <?php _e( 'Custom label text (default: "3D Model")', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>label_position</strong> - <?php _e( 'Label corner position (top-left, top-right, bottom-left, bottom-right)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>label_color</strong> - <?php _e( 'Label background color/style (CSS value)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>ar_position</strong> - <?php _e( 'AR button corner position (top-left, top-right, bottom-left, bottom-right)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>ar_color</strong> - <?php _e( 'AR button background color/style (CSS value)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>show_border</strong> - <?php _e( 'Show/hide border around viewer (true/false, default: true)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>border_color</strong> - <?php _e( 'Border color (default: #0073aa)', 'wp-3d-model-viewer' ); ?></li>
+            <li><strong>border_width</strong> - <?php _e( 'Border width in pixels (default: 2)', 'wp-3d-model-viewer' ); ?></li>
+        </ul>
 
         <h3><?php _e( 'Enhanced Features', 'wp-3d-model-viewer' ); ?></h3>
         <ul>
@@ -252,5 +265,19 @@ $settings = $admin->get_settings();
         <code>[model_viewer id="123"]</code>
         <p><?php _e( 'OR for manual configuration:', 'wp-3d-model-viewer' ); ?></p>
         <code>[3d_model_viewer src="model.glb" ios_src="model.usdz" ar="true" poster="poster.jpg" camera_controls="true"]</code>
+        
+        <h3><?php _e( 'Customization Examples', 'wp-3d-model-viewer' ); ?></h3>
+        
+        <h4><?php _e( 'Custom Label & Position', 'wp-3d-model-viewer' ); ?></h4>
+        <code>[3d_model_viewer src="model.glb" label_text="Product Model" label_position="top-right" label_color="rgba(255, 0, 0, 0.8)"]</code>
+        
+        <h4><?php _e( 'Hide Label & Border', 'wp-3d-model-viewer' ); ?></h4>
+        <code>[3d_model_viewer src="model.glb" show_label="false" show_border="false"]</code>
+        
+        <h4><?php _e( 'Custom AR Button Position', 'wp-3d-model-viewer' ); ?></h4>
+        <code>[3d_model_viewer src="model.glb" ar="true" ar_position="top-left" ar_color="#ff6b35"]</code>
+        
+        <h4><?php _e( 'Custom Border Styling', 'wp-3d-model-viewer' ); ?></h4>
+        <code>[3d_model_viewer src="model.glb" border_color="#ff0000" border_width="5"]</code>
     </div>
 </div>

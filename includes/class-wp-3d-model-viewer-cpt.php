@@ -380,6 +380,14 @@ class WP_3D_Model_Viewer_CPT {
 					</div>
 				</div>
 				<hr>
+			<?php else : ?>
+				<div class="wp3d-preview-section">
+					<h3><?php _e( 'Interactive Model Preview', 'wp-3d-model-viewer' ); ?></h3>
+					<div class="wp3d-no-model-notice">
+						<p><span class="dashicons dashicons-info"></span> <?php _e( 'Upload a 3D model file above to see the interactive preview and position controls.', 'wp-3d-model-viewer' ); ?></p>
+					</div>
+				</div>
+				<hr>
 			<?php endif; ?>
 
 			<table class="form-table">

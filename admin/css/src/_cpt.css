@@ -182,6 +182,31 @@
 	box-shadow: var(--wp3d-shadow-lg);
 }
 
+.wp3d-no-model-notice {
+	padding: var(--wp3d-space-xl);
+	background: var(--wp3d-bg-light);
+	border: 2px dashed var(--wp3d-border);
+	border-radius: var(--wp3d-radius);
+	text-align: center;
+	color: var(--wp3d-text-muted);
+}
+
+.wp3d-no-model-notice p {
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--wp3d-space-sm);
+	font-size: var(--wp3d-font-size-md);
+}
+
+.wp3d-no-model-notice .dashicons {
+	color: var(--wp3d-info);
+	font-size: 20px;
+	width: 20px;
+	height: 20px;
+}
+
 .wp3d-preview-controls {
 	margin-top: var(--wp3d-space-lg);
 	display: flex;

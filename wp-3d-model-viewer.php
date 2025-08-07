@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -89,9 +88,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wp-3d-model-viewer.php';
  * @since    1.0.0
  */
 function run_wp_3d_model_viewer() {
-
-	$plugin = new WP_3D_Model_Viewer();
-	$plugin->run();
-
+		$plugin = new WP_3D_Model_Viewer();
+		$plugin->run();
 }
 run_wp_3d_model_viewer();

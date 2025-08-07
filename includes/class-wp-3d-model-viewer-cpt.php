@@ -211,6 +211,16 @@ class WP_3D_Model_Viewer_CPT {
 	 */
 	public function add_metaboxes() {
 		
+		// Add 3D Model Preview metabox at the top
+		add_meta_box(
+			'wp3d-model-preview',
+			'3D Model Preview',
+			array( $this, 'model_preview_metabox_callback' ),
+			$this->post_type,
+			'normal',
+			'high'
+		);
+
 		add_meta_box(
 			'wp3d-model-file',
 			__( '3D Model File', 'wp-3d-model-viewer' ),
@@ -237,6 +247,93 @@ class WP_3D_Model_Viewer_CPT {
 			'side',
 			'high'
 		);
+	}
+
+	/**
+	 * Model preview metabox callback.
+	 *
+	 * @since    1.0.0
+	 * @param    WP_Post    $post    Post object.
+	 */
+	public function model_preview_metabox_callback( $post ) {
+		
+		// Get current values
+		$model_file = get_post_meta( $post->ID, '_wp3d_model_file', true );
+		$poster_image = get_post_meta( $post->ID, '_wp3d_poster_image', true );
+
+		?>
+		<!-- 3D Model Preview Section -->
+		<?php if ( $model_file ) : ?>
+			<?php $model_url = wp_get_attachment_url( $model_file ); ?>
+			<div class="wp3d-admin-preview-section" style="padding: 15px; border: 1px solid #ccd0d4; border-radius: 4px; background: #f9f9f9;">
+				<div id="wp3d-admin-preview-container" style="margin: 10px 0;">
+					<model-viewer 
+						src="<?php echo esc_url( $model_url ); ?>"
+						style="width: 100%; height: 400px; background-color: #f0f0f0; border-radius: 4px;"
+						camera-controls 
+						auto-rotate
+						loading="eager"
+						class="wp3d-admin-preview"
+						<?php if ( $poster_image ) : ?>
+						poster="<?php echo esc_url( wp_get_attachment_url( $poster_image ) ); ?>"
+						<?php endif; ?>
+						alt="<?php echo esc_attr( $post->post_title ?: '3D Model Preview' ); ?>">
+						
+						<!-- Loading placeholder -->
+						<div slot="poster" style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0;">
+							<div style="text-align: center;">
+								<div class="wp3d-admin-spinner" style="border: 4px solid #f3f3f3; border-radius: 50%; border-top: 4px solid #0073aa; width: 40px; height: 40px; animation: wp3d-spin 2s linear infinite; margin: 0 auto 10px;"></div>
+								<p style="margin: 0; color: #666;">Loading 3D Model...</p>
+							</div>
+						</div>
+						
+						<!-- Error fallback -->
+						<div slot="fallback" style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0;">
+							<div style="text-align: center; color: #d63638;">
+								<p style="margin: 0;"><strong>Unable to load 3D model</strong></p>
+								<p style="margin: 5px 0 0; font-size: 12px;">Please check the file format and try again.</p>
+							</div>
+						</div>
+					</model-viewer>
+				</div>
+				
+				<div class="wp3d-preview-controls" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
+					<button type="button" class="button button-secondary wp3d-refresh-preview" onclick="wp3dRefreshPreview()">
+						Refresh Preview
+					</button>
+					<button type="button" class="button button-secondary wp3d-reset-camera" onclick="wp3dResetCamera()">
+						Reset Camera
+					</button>
+					<span style="margin-left: 15px; color: #666; font-size: 12px;">
+						Drag to rotate • Scroll to zoom • Double-click to reset
+					</span>
+				</div>
+			</div>
+		<?php else : ?>
+			<div class="wp3d-admin-preview-placeholder" style="padding: 40px; border: 2px dashed #ccd0d4; border-radius: 4px; text-align: center; background: #fafafa;">
+				<p style="margin: 0; color: #666; font-size: 16px;">
+					<span class="dashicons dashicons-format-gallery" style="font-size: 32px; width: 32px; height: 32px; margin-bottom: 15px;"></span><br>
+					<strong>Upload a 3D model file to see the preview here</strong><br>
+					<small>The preview will appear automatically after you upload a GLB or GLTF file below.</small>
+				</p>
+			</div>
+		<?php endif; ?>
+		
+		<style>
+			@keyframes wp3d-spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+			
+			.wp3d-admin-preview model-viewer {
+				box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+			}
+			
+			.wp3d-admin-preview:hover {
+				box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+			}
+		</style>
+		<?php
 	}
 
 	/**
@@ -312,78 +409,6 @@ class WP_3D_Model_Viewer_CPT {
 				</td>
 			</tr>
 		</table>
-
-		<!-- 3D Model Preview Section -->
-		<?php if ( $model_file ) : ?>
-			<?php $model_url = wp_get_attachment_url( $model_file ); ?>
-			<div class="wp3d-admin-preview-section" style="margin-top: 20px; padding: 15px; border: 1px solid #ccd0d4; border-radius: 4px; background: #f9f9f9;">
-				<h4><?php _e( '3D Model Preview', 'wp-3d-model-viewer' ); ?></h4>
-				<div id="wp3d-admin-preview-container" style="margin: 10px 0;">
-					<model-viewer 
-						src="<?php echo esc_url( $model_url ); ?>"
-						style="width: 100%; height: 400px; background-color: #f0f0f0; border-radius: 4px;"
-						camera-controls 
-						auto-rotate
-						loading="eager"
-						class="wp3d-admin-preview"
-						<?php if ( $poster_image ) : ?>
-						poster="<?php echo esc_url( wp_get_attachment_url( $poster_image ) ); ?>"
-						<?php endif; ?>
-						alt="<?php echo esc_attr( $post->post_title ?: '3D Model Preview' ); ?>">
-						
-						<!-- Loading placeholder -->
-						<div slot="poster" style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0;">
-							<div style="text-align: center;">
-								<div class="wp3d-admin-spinner" style="border: 4px solid #f3f3f3; border-radius: 50%; border-top: 4px solid #0073aa; width: 40px; height: 40px; animation: wp3d-spin 2s linear infinite; margin: 0 auto 10px;"></div>
-								<p style="margin: 0; color: #666;"><?php _e( 'Loading 3D Model...', 'wp-3d-model-viewer' ); ?></p>
-							</div>
-						</div>
-						
-						<!-- Error fallback -->
-						<div slot="fallback" style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0;">
-							<div style="text-align: center; color: #d63638;">
-								<p style="margin: 0;"><strong><?php _e( 'Unable to load 3D model', 'wp-3d-model-viewer' ); ?></strong></p>
-								<p style="margin: 5px 0 0; font-size: 12px;"><?php _e( 'Please check the file format and try again.', 'wp-3d-model-viewer' ); ?></p>
-							</div>
-						</div>
-					</model-viewer>
-				</div>
-				
-				<div class="wp3d-preview-controls" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
-					<button type="button" class="button button-secondary wp3d-refresh-preview" onclick="wp3dRefreshPreview()">
-						<?php _e( 'Refresh Preview', 'wp-3d-model-viewer' ); ?>
-					</button>
-					<button type="button" class="button button-secondary wp3d-reset-camera" onclick="wp3dResetCamera()">
-						<?php _e( 'Reset Camera', 'wp-3d-model-viewer' ); ?>
-					</button>
-					<span style="margin-left: 15px; color: #666; font-size: 12px;">
-						<?php _e( 'Drag to rotate • Scroll to zoom • Double-click to reset', 'wp-3d-model-viewer' ); ?>
-					</span>
-				</div>
-			</div>
-		<?php else : ?>
-			<div class="wp3d-admin-preview-placeholder" style="margin-top: 20px; padding: 20px; border: 2px dashed #ccd0d4; border-radius: 4px; text-align: center; background: #fafafa;">
-				<p style="margin: 0; color: #666;">
-					<span class="dashicons dashicons-format-gallery" style="font-size: 24px; width: 24px; height: 24px; margin-bottom: 10px;"></span><br>
-					<?php _e( 'Upload a 3D model file to see the preview here', 'wp-3d-model-viewer' ); ?>
-				</p>
-			</div>
-		<?php endif; ?>
-		
-		<style>
-			@keyframes wp3d-spin {
-				0% { transform: rotate(0deg); }
-				100% { transform: rotate(360deg); }
-			}
-			
-			.wp3d-admin-preview model-viewer {
-				box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-			}
-			
-			.wp3d-admin-preview:hover {
-				box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-			}
-		</style>
 		<?php
 	}
 

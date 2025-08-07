@@ -8,6 +8,23 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
 2. Activate the plugin
 3. You're ready to use 3D models!
 
+## Admin Interface
+
+### **🎯 NEW: Live 3D Model Preview**
+When editing a 3D model in WordPress admin, you'll see:
+
+1. **3D Model Preview** (Top metabox) - Live interactive preview of your model
+2. **3D Model File** - Upload your GLB/GLTF files  
+3. **3D Model Settings** - Configure viewer options
+4. **Shortcode Usage** - Copy shortcode for use in posts/pages
+
+### **Interactive Preview Controls**
+- **Drag to rotate** the model
+- **Scroll to zoom** in and out
+- **Refresh Preview** button to reload the model
+- **Reset Camera** button to return to default view
+- **Auto-rotation** for better viewing
+
 ## Usage
 
 ### Basic Shortcode
@@ -29,11 +46,17 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
     alt="My 3D Model"]
 ```
 
+### Using Custom Post Type
+```
+[3d_model_viewer id="123"]
+```
+
 ## Shortcode Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `src` | URL | *required* | URL to 3D model file (.glb, .gltf) |
+| `id` | Number | - | Custom Post Type ID for stored 3D models |
 | `width` | String | `100%` | Viewer width (px, %, em, etc.) |
 | `height` | String | `400px` | Viewer height (px, %, em, etc.) |
 | `auto_rotate` | Boolean | `false` | Enable automatic rotation |
@@ -55,6 +78,13 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
 - Full 3D model support (GLB, GLTF)
 - Automatic script loading with module support
 
+### ✅ Admin Preview System  
+- **Live preview** in WordPress admin
+- **Interactive controls** - rotate, zoom, examine models
+- **Auto-refresh** when files are updated
+- **Error handling** with clear feedback
+- **Responsive design** for all screen sizes
+
 ### ✅ AR Support
 - WebXR support
 - iOS Quick Look
@@ -72,6 +102,26 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
 - Responsive design
 - Loading states and error handling
 
+## Admin Workflow
+
+### Adding a New 3D Model
+
+1. **Go to WordPress Admin** → **3D Models** → **Add New**
+2. **Enter a title** for your 3D model
+3. **Upload model file** in the "3D Model File" section
+4. **Preview appears automatically** at the top - interact with your model!
+5. **Configure settings** like background color, camera controls, AR
+6. **Copy the shortcode** and use it in posts/pages
+
+### The Preview System
+
+The **3D Model Preview** metabox shows at the top and provides:
+- **Real-time 3D preview** of uploaded models
+- **Interactive controls** for testing the model
+- **Loading animations** and error handling
+- **Refresh/Reset buttons** for preview control
+- **Visual instructions** for users
+
 ## File Format Support
 - **GLB** (recommended) - Binary GLTF format
 - **GLTF** - Text-based GLTF format
@@ -87,7 +137,13 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
 
 ## Troubleshooting
 
-### Model Not Loading?
+### Model Not Loading in Admin Preview?
+1. Check that the model file is properly uploaded
+2. Verify file format is GLB or GLTF
+3. Use the "Refresh Preview" button
+4. Check browser console for errors
+
+### Model Not Loading on Frontend?
 1. Check that the model URL is accessible
 2. Verify file format is GLB or GLTF
 3. Check browser console for errors
@@ -113,6 +169,11 @@ This WordPress plugin uses **Google's model-viewer** library to display 3D model
     ar="true" 
     ar_modes="webxr scene-viewer quick-look"
     poster="/wp-content/uploads/chair-poster.jpg"]
+```
+
+### Using Custom Post Type
+```
+[3d_model_viewer id="15" width="100%" height="600px"]
 ```
 
 ### Custom Styled Viewer

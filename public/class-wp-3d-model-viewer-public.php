@@ -108,8 +108,8 @@ class WP_3D_Model_Viewer_Public {
 		// Add module and async attributes to the model-viewer script
 		add_filter( 'script_loader_tag', array( $this, 'add_module_async_attributes' ), 10, 3 );
 
-		// Enqueue plugin JavaScript
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-public.js', array( 'jquery' ), $this->version, false );
+        // Enqueue plugin JavaScript and ensure it runs after model-viewer is available
+        wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-public.js', array( 'jquery', 'model-viewer' ), $this->version, true );
 
 	}
 

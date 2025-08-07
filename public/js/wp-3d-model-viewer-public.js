@@ -52,38 +52,25 @@
 		 * Initialize public functionality
 		 */
 		init: function() {
-			this.loadModelViewerScript()
-				.then(() => {
+			// Ensure the custom element is defined before proceeding
+			if (window.customElements && window.customElements.whenDefined) {
+				window.customElements.whenDefined('model-viewer').then(() => {
 					this.initViewers();
 					this.bindEvents();
 					this.setupLazyLoading();
-				})
-				.catch(error => {
-					console.error('Failed to load model-viewer script:', error);
 				});
+			} else {
+				// Fallback: proceed on DOM ready
+				this.initViewers();
+				this.bindEvents();
+				this.setupLazyLoading();
+			}
 		},
 
 		/**
 		 * Load the model-viewer script
 		 */
-		loadModelViewerScript: function() {
-			return new Promise((resolve, reject) => {
-				// Check if already loaded
-				if (window.customElements && window.customElements.get('model-viewer')) {
-					resolve();
-					return;
-				}
-
-				// Create script element
-				const script = document.createElement('script');
-				script.type = 'module';
-				script.src = this.config.modelViewerScript;
-				script.onload = resolve;
-				script.onerror = reject;
-				
-				document.head.appendChild(script);
-			});
-		},
+		loadModelViewerScript: function() { /* No-op: script is enqueued by WordPress */ return Promise.resolve(); },
 
 		/**
 		 * Initialize all model viewers on the page

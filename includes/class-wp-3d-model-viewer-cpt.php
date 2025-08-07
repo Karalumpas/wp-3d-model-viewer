@@ -520,8 +520,31 @@ class WP_3D_Model_Viewer_CPT {
 		
 		if ( $post_type === $this->post_type ) {
 			wp_enqueue_media();
-			wp_enqueue_script( 'wp3d-admin-cpt', plugin_dir_url( __FILE__ ) . '../admin/js/wp-3d-model-viewer-cpt.js', array( 'jquery' ), '1.0.0', true );
+			// Enqueue model-viewer in admin for live preview
+			wp_enqueue_script(
+				'model-viewer',
+				'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js',
+				array(),
+				'3.5.0',
+				true
+			);
+
+			// Ensure script tag has type="module" and async
+			add_filter( 'script_loader_tag', array( $this, 'add_module_async_attributes' ), 10, 3 );
+
+			// Enqueue CPT admin script after model-viewer
+			wp_enqueue_script( 'wp3d-admin-cpt', plugin_dir_url( __FILE__ ) . '../admin/js/wp-3d-model-viewer-cpt.js', array( 'jquery', 'model-viewer' ), '1.0.1', true );
 		}
+	}
+
+	/**
+	 * Add type="module" and async to model-viewer script tag in admin.
+	 */
+	public function add_module_async_attributes( $tag, $handle, $src ) {
+		if ( 'model-viewer' === $handle ) {
+			$tag = str_replace( '<script ', '<script type="module" async ', $tag );
+		}
+		return $tag;
 	}
 
 }

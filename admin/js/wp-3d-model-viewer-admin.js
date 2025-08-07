@@ -48,6 +48,9 @@
 			this.bindEvents();
 			this.initFormValidation();
 			this.initColorPickers();
+			this.initModelViewer();
+			this.initPreviewControls();
+		},
 			this.initFileTypeToggle();
 		},
 
@@ -300,7 +303,136 @@
 		 */
 		hideFieldError: function($field) {
 			$field.siblings('.wp3d-field-error').remove();
+		},
+
+		/**
+		 * Initialize model-viewer library for admin preview
+		 */
+		initModelViewer: function() {
+			// Load model-viewer script if not already loaded
+			if (!window.customElements || !window.customElements.get('model-viewer')) {
+				const script = document.createElement('script');
+				script.type = 'module';
+				script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+				document.head.appendChild(script);
+			}
+		},
+
+		/**
+		 * Initialize preview control functionality
+		 */
+		initPreviewControls: function() {
+			// Listen for file uploads to refresh preview
+			$(document).on('change', '#wp3d_model_file', this.updatePreview.bind(this));
+			$(document).on('change', '#wp3d_poster_image', this.updatePreviewPoster.bind(this));
+		},
+
+		/**
+		 * Update the 3D model preview when a new file is selected
+		 */
+		updatePreview: function() {
+			const modelFileId = $('#wp3d_model_file').val();
+			const $previewContainer = $('#wp3d-admin-preview-container');
+			const $placeholder = $('.wp3d-admin-preview-placeholder');
+
+			if (modelFileId) {
+				// Get the attachment URL via WordPress media API
+				wp.media.attachment(modelFileId).fetch().then(function(attachment) {
+					const modelUrl = attachment.url;
+					const posterImageId = $('#wp3d_poster_image').val();
+					
+					// Hide placeholder, show preview
+					$placeholder.hide();
+					$previewContainer.parent().show();
+
+					// Update or create model-viewer element
+					let $modelViewer = $previewContainer.find('model-viewer');
+					if ($modelViewer.length === 0) {
+						$modelViewer = $('<model-viewer>');
+						$previewContainer.html($modelViewer);
+					}
+
+					// Update model-viewer attributes
+					$modelViewer.attr({
+						'src': modelUrl,
+						'style': 'width: 100%; height: 400px; background-color: #f0f0f0; border-radius: 4px;',
+						'camera-controls': '',
+						'auto-rotate': '',
+						'loading': 'eager',
+						'class': 'wp3d-admin-preview'
+					});
+
+					// Add poster if available
+					if (posterImageId) {
+						wp.media.attachment(posterImageId).fetch().then(function(posterAttachment) {
+							$modelViewer.attr('poster', posterAttachment.url);
+						});
+					}
+
+					// Re-add loading and fallback content
+					$modelViewer.html(`
+						<div slot="poster" style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0;">
+							<div style="text-align: center;">
+								<div class="wp3d-admin-spinner" style="border: 4px solid #f3f3f3; border-radius: 50%; border-top: 4px solid #0073aa; width: 40px; height: 40px; animation: wp3d-spin 2s linear infinite; margin: 0 auto 10px;"></div>
+								<p style="margin: 0; color: #666;">Loading 3D Model...</p>
+							</div>
+						</div>
+						<div slot="fallback" style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f0f0f0;">
+							<div style="text-align: center; color: #d63638;">
+								<p style="margin: 0;"><strong>Unable to load 3D model</strong></p>
+								<p style="margin: 5px 0 0; font-size: 12px;">Please check the file format and try again.</p>
+							</div>
+						</div>
+					`);
+				});
+			} else {
+				// No model file, show placeholder
+				$previewContainer.parent().hide();
+				$placeholder.show();
+			}
+		},
+
+		/**
+		 * Update preview poster image
+		 */
+		updatePreviewPoster: function() {
+			const posterImageId = $('#wp3d_poster_image').val();
+			const $modelViewer = $('#wp3d-admin-preview-container model-viewer');
+
+			if ($modelViewer.length && posterImageId) {
+				wp.media.attachment(posterImageId).fetch().then(function(attachment) {
+					$modelViewer.attr('poster', attachment.url);
+				});
+			} else if ($modelViewer.length) {
+				$modelViewer.removeAttr('poster');
+			}
 		}
 	};
 
 })( jQuery );
+
+/**
+ * Global functions for 3D model preview controls
+ * These are called from inline onclick handlers in the PHP
+ */
+function wp3dRefreshPreview() {
+	const $modelViewer = jQuery('#wp3d-admin-preview-container model-viewer');
+	if ($modelViewer.length) {
+		// Force reload by temporarily removing and re-adding src
+		const src = $modelViewer.attr('src');
+		$modelViewer.removeAttr('src');
+		setTimeout(() => {
+			$modelViewer.attr('src', src);
+		}, 100);
+	}
+}
+
+function wp3dResetCamera() {
+	const modelViewer = document.querySelector('#wp3d-admin-preview-container model-viewer');
+	if (modelViewer && modelViewer.resetTurntableRotation) {
+		modelViewer.resetTurntableRotation();
+	}
+	if (modelViewer && modelViewer.jumpCameraToGoal) {
+		modelViewer.jumpCameraToGoal();
+	}
+}

@@ -93,7 +93,43 @@ class WP_3D_Model_Viewer_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-admin.js', array( 'jquery' ), $this->version, false );
+		// Check if we're on the 3D model post type edit screen
+		$screen = get_current_screen();
+		if ( $screen && ( $screen->post_type === '3d_model' || $screen->id === 'settings_page_wp-3d-model-viewer' ) ) {
+			
+			// Enqueue model-viewer library for admin previews
+			wp_enqueue_script( 
+				'model-viewer-admin', 
+				'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js', 
+				array(), 
+				'3.5.0', 
+				true 
+			);
+			
+			// Add module attribute for model-viewer script
+			add_filter( 'script_loader_tag', array( $this, 'add_module_attribute_admin' ), 10, 3 );
+		}
+
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-admin.js', array( 'jquery', 'media-upload', 'wp-color-picker' ), $this->version, false );
+	}
+
+	/**
+	 * Add module attribute to model-viewer script for admin.
+	 *
+	 * @since    1.0.0
+	 * @param    string    $tag     The script tag.
+	 * @param    string    $handle  The script handle.
+	 * @param    string    $src     The script source URL.
+	 * @return   string             Modified script tag.
+	 */
+	public function add_module_attribute_admin( $tag, $handle, $src ) {
+		
+		if ( 'model-viewer-admin' === $handle ) {
+			// Add type="module" attribute for model-viewer
+			$tag = str_replace( '<script ', '<script type="module" ', $tag );
+		}
+		
+		return $tag;
 	}
 
 		/**

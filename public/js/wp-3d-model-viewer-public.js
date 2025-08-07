@@ -31,9 +31,17 @@
 
 	$(function() {
 		
-		// Initialize public functionality
+		// Initialize public functionality when DOM is ready
 		WP3DModelViewer.init();
 		
+	});
+
+	// Also initialize when model-viewer library is ready
+	document.addEventListener('DOMContentLoaded', function() {
+		// Double-check initialization in case jQuery isn't available
+		if (typeof WP3DModelViewer !== 'undefined') {
+			WP3DModelViewer.init();
+		}
 	});
 
 	/**
@@ -48,10 +56,19 @@
 			loadedViewers: new Set()
 		},
 
+		// Track initialization state
+		initialized: false,
+
 		/**
 		 * Initialize public functionality
 		 */
 		init: function() {
+			// Check if already initialized to prevent double initialization
+			if (this.initialized) {
+				return;
+			}
+			this.initialized = true;
+
 			this.loadModelViewerScript()
 				.then(() => {
 					this.initViewers();
@@ -60,6 +77,12 @@
 				})
 				.catch(error => {
 					console.error('Failed to load model-viewer script:', error);
+					// Fallback: try to initialize without explicit script loading
+					setTimeout(() => {
+						this.initViewers();
+						this.bindEvents();
+						this.setupLazyLoading();
+					}, 1000);
 				});
 		},
 

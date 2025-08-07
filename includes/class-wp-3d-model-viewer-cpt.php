@@ -776,6 +776,8 @@ class WP_3D_Model_Viewer_CPT {
 		$show_border = get_post_meta( $post->ID, '_wp3d_show_border', true );
 		$border_color = get_post_meta( $post->ID, '_wp3d_border_color', true );
 		$border_width = get_post_meta( $post->ID, '_wp3d_border_width', true );
+		$border_shadow = get_post_meta( $post->ID, '_wp3d_border_shadow', true );
+		$shadow_intensity = get_post_meta( $post->ID, '_wp3d_shadow_intensity', true );
 
 		// Set defaults
 		if ( empty( $zoom_level ) ) $zoom_level = '1';
@@ -790,6 +792,8 @@ class WP_3D_Model_Viewer_CPT {
 		if ( $show_border === '' ) $show_border = '1';
 		if ( empty( $border_color ) ) $border_color = '#0073aa';
 		if ( empty( $border_width ) ) $border_width = '2';
+		if ( $border_shadow === '' ) $border_shadow = '1';
+		if ( empty( $shadow_intensity ) ) $shadow_intensity = '3';
 
 		?>
 		<div class="wp3d-advanced-settings">
@@ -891,6 +895,21 @@ class WP_3D_Model_Viewer_CPT {
 									<span class="wp3d-border-width-value" style="display: inline-block; width: 35px; text-align: center; font-weight: bold;"><?php echo esc_html( $border_width ); ?>px</span>
 								</div>
 							</div>
+							<div style="display: grid; grid-template-columns: auto 1fr; gap: 15px; margin-top: 15px; align-items: start;">
+								<div style="padding-top: 8px;">
+									<label class="wp3d-checkbox-label">
+										<input type="checkbox" id="wp3d_border_shadow" name="wp3d_border_shadow" value="1" <?php checked( $border_shadow, '1' ); ?> />
+										<span class="checkmark"></span>
+										<?php _e( 'Show shadow', 'wp-3d-model-viewer' ); ?>
+									</label>
+								</div>
+								<div>
+									<label for="wp3d_shadow_intensity" style="font-weight: 600; display: block; margin-bottom: 5px;"><?php _e( 'Shadow Intensity', 'wp-3d-model-viewer' ); ?></label>
+									<input type="range" id="wp3d_shadow_intensity" name="wp3d_shadow_intensity" value="<?php echo esc_attr( $shadow_intensity ); ?>" min="1" max="10" step="1" style="width: calc(100% - 60px);" />
+									<span class="wp3d-shadow-intensity-value" style="display: inline-block; width: 55px; text-align: center; font-weight: bold;"><?php echo esc_html( $shadow_intensity ); ?>/10</span>
+									<p class="description"><?php _e( 'Controls the depth and blur of the drop shadow', 'wp-3d-model-viewer' ); ?></p>
+								</div>
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -970,6 +989,11 @@ class WP_3D_Model_Viewer_CPT {
 				$('.wp3d-border-width-value').text($(this).val() + 'px');
 			});
 			
+			// Update shadow intensity display
+			$('#wp3d_shadow_intensity').on('input', function() {
+				$('.wp3d-shadow-intensity-value').text($(this).val() + '/10');
+			});
+			
 			// Update border color preview
 			$('#wp3d_border_color').on('change', function() {
 				$(this).next('input[type="text"]').val($(this).val());
@@ -992,6 +1016,16 @@ class WP_3D_Model_Viewer_CPT {
 					$borderFields.show();
 				} else {
 					$borderFields.hide();
+				}
+			}).trigger('change');
+			
+			// Toggle shadow fields based on checkbox
+			$('#wp3d_border_shadow').on('change', function() {
+				var $shadowFields = $('#wp3d_shadow_intensity').closest('div');
+				if ($(this).is(':checked')) {
+					$shadowFields.show();
+				} else {
+					$shadowFields.hide();
 				}
 			}).trigger('change');
 		});
@@ -1102,6 +1136,8 @@ class WP_3D_Model_Viewer_CPT {
 		$show_border = isset( $_POST['wp3d_show_border'] ) ? '1' : '0';
 		$border_color = isset( $_POST['wp3d_border_color'] ) ? sanitize_hex_color( $_POST['wp3d_border_color'] ) : '#0073aa';
 		$border_width = isset( $_POST['wp3d_border_width'] ) ? absint( $_POST['wp3d_border_width'] ) : 2;
+		$border_shadow = isset( $_POST['wp3d_border_shadow'] ) ? '1' : '0';
+		$shadow_intensity = isset( $_POST['wp3d_shadow_intensity'] ) ? absint( $_POST['wp3d_shadow_intensity'] ) : 3;
 
 		// Save advanced settings
 		$loading_behavior = isset( $_POST['wp3d_loading'] ) ? sanitize_text_field( $_POST['wp3d_loading'] ) : 'auto';
@@ -1125,6 +1161,8 @@ class WP_3D_Model_Viewer_CPT {
 		update_post_meta( $post_id, '_wp3d_show_border', $show_border );
 		update_post_meta( $post_id, '_wp3d_border_color', $border_color );
 		update_post_meta( $post_id, '_wp3d_border_width', $border_width );
+		update_post_meta( $post_id, '_wp3d_border_shadow', $border_shadow );
+		update_post_meta( $post_id, '_wp3d_shadow_intensity', $shadow_intensity );
 
 		// Save advanced settings
 		update_post_meta( $post_id, '_wp3d_loading', $loading_behavior );

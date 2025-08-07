@@ -12,12 +12,16 @@
     background: #f0f0f0;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
 }
 
-.wp3d-viewer:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+/* Default subtle shadow - can be overridden */
+.wp3d-viewer:not(.wp3d-has-shadow) {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wp3d-viewer:not(.wp3d-has-shadow):hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* CPT Model Specific Styles */
@@ -98,6 +102,31 @@
 
 .wp3d-cpt-model.wp3d-has-border {
     /* Border styles are applied via inline CSS for customization */
+    border: 2px solid #0073aa; /* Default fallback */
+}
+
+/* Shadow controls */
+.wp3d-has-shadow {
+    /* Shadow styles are applied via inline CSS for customization */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Default fallback */
+}
+
+.wp3d-viewer.wp3d-has-shadow {
+    /* Override default shadow when custom shadow is applied */
+    box-shadow: none !important;
+}
+
+/* Shadow intensity presets (fallback) */
+.wp3d-shadow-light {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
+
+.wp3d-shadow-medium {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.wp3d-shadow-heavy {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Enhanced Loading States */

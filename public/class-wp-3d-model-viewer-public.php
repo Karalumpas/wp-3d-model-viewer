@@ -92,17 +92,17 @@ class WP_3D_Model_Viewer_Public {
 				'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js', 
 				array(), 
 				'3.5.0', 
-				true 
+				false  // Load in head to ensure it's available when model-viewer tags are parsed
 			);
 			
-			// Add module attribute to the model-viewer script (no async to avoid loading issues)
+			// Add module attribute to the model-viewer script
 			add_filter( 'script_loader_tag', array( $this, 'add_module_attribute' ), 10, 3 );
 
 			// Enqueue plugin JavaScript
 			wp_enqueue_script( 
 				$this->plugin_name, 
 				plugin_dir_url( __FILE__ ) . 'js/wp-3d-model-viewer-public.js', 
-				array( 'jquery' ), 
+				array( 'jquery', 'model-viewer' ), 
 				$this->version, 
 				true 
 			);
@@ -484,10 +484,13 @@ class WP_3D_Model_Viewer_Public {
 		$show_border = get_post_meta( $post_id, '_wp3d_show_border', true );
 		$border_color = get_post_meta( $post_id, '_wp3d_border_color', true ) ?: '#0073aa';
 		$border_width = get_post_meta( $post_id, '_wp3d_border_width', true ) ?: '2';
+		$border_shadow = get_post_meta( $post_id, '_wp3d_border_shadow', true );
+		$shadow_intensity = get_post_meta( $post_id, '_wp3d_shadow_intensity', true ) ?: '3';
 		
 		// Set defaults for checkboxes if empty
 		if ( $show_label === '' ) $show_label = '1';
 		if ( $show_border === '' ) $show_border = '1';
+		if ( $border_shadow === '' ) $border_shadow = '1';
 		
 		// Set default for camera_controls if empty (should be enabled by default)
 		if ( $camera_controls === '' ) {
@@ -527,6 +530,9 @@ class WP_3D_Model_Viewer_Public {
 		// Add customization classes
 		if ( $show_border && $show_border !== '0' ) {
 			$css_classes[] = 'wp3d-has-border';
+		}
+		if ( $border_shadow && $border_shadow !== '0' ) {
+			$css_classes[] = 'wp3d-has-shadow';
 		}
 		if ( $show_label && $show_label !== '0' && ! empty( $label_text ) ) {
 			$css_classes[] = 'wp3d-has-label';
@@ -584,9 +590,9 @@ class WP_3D_Model_Viewer_Public {
 			}
 		}
 		
-		// Performance attributes
-		$model_attributes['loading'] = 'lazy';
-		$model_attributes['reveal'] = 'interaction';
+		// Performance attributes - use eager loading to ensure model shows immediately
+		$model_attributes['loading'] = 'eager';
+		// Remove reveal=interaction to allow immediate loading
 		
 		// Convert attributes array to string
 		$attributes_string = '';
@@ -653,6 +659,20 @@ class WP_3D_Model_Viewer_Public {
 			$html .= '#' . $viewer_id . '.wp3d-cpt-model { border: ' . absint( $border_width ) . 'px solid ' . esc_attr( $border_color ) . '; }';
 		} else {
 			$html .= '#' . $viewer_id . '.wp3d-cpt-model { border: none; }';
+		}
+		
+		// Shadow styling
+		if ( $border_shadow && $border_shadow !== '0' ) {
+			$shadow_blur = absint( $shadow_intensity ) * 2; // Base blur
+			$shadow_spread = absint( $shadow_intensity ); // Spread
+			$shadow_offset = absint( $shadow_intensity ); // Offset
+			$shadow_opacity = 0.1 + ( absint( $shadow_intensity ) * 0.05 ); // Dynamic opacity
+			
+			$html .= '#' . $viewer_id . '.wp3d-cpt-model { ';
+			$html .= 'box-shadow: 0 ' . $shadow_offset . 'px ' . $shadow_blur . 'px ' . $shadow_spread . 'px rgba(0, 0, 0, ' . $shadow_opacity . '); ';
+			$html .= '}';
+		} else {
+			$html .= '#' . $viewer_id . '.wp3d-cpt-model { box-shadow: none; }';
 		}
 		
 		// Remove default label if custom label is used or hidden

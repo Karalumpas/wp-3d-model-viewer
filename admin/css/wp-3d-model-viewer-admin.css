@@ -1081,6 +1081,192 @@ fieldset input[type="checkbox"] {
 }
 
 /* ==========================================================================
+   3D Model Interactive Preview
+   ========================================================================== */
+
+.wp3d-admin-settings {
+	max-width: 100%;
+}
+
+.wp3d-preview-section {
+	background: #ffffff;
+	border: 1px solid #e5e5e5;
+	border-radius: 8px;
+	padding: 15px;
+	margin-bottom: 20px;
+	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.wp3d-preview-section h3 {
+	margin-top: 0;
+	margin-bottom: 10px;
+	color: #23282d;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.wp3d-preview-section h3::before {
+	content: "🎮";
+	font-size: 16px;
+}
+
+.wp3d-preview-container {
+	background: #f9f9f9;
+	padding: 12px;
+	border-radius: 4px;
+	border: 2px solid #e5e5e5;
+	position: relative;
+	overflow: hidden;
+}
+
+.wp3d-preview-container model-viewer {
+	display: block;
+	width: 100% !important;
+	height: 400px !important;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	background: #ffffff;
+	transition: all 0.2s ease;
+}
+
+.wp3d-preview-container model-viewer:hover {
+	box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.wp3d-preview-controls {
+	margin-top: 10px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-wrap: wrap;
+	padding: 10px;
+	background: #ffffff;
+	border-radius: 4px;
+	border: 1px solid #e5e5e5;
+}
+
+.wp3d-preview-controls .button {
+	display: flex;
+	align-items: center;
+	gap: 3px;
+	padding: 5px 10px;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+	font-weight: 500;
+}
+
+.wp3d-preview-controls .button:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.wp3d-preview-controls .button .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+.wp3d-position-status {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	margin-left: auto;
+	padding: 5px 10px;
+	background: #f9f9f9;
+	border-radius: 4px;
+	font-size: 12px;
+}
+
+.wp3d-status-indicator {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: #ddd;
+	transition: background-color 0.2s ease;
+	flex-shrink: 0;
+}
+
+.wp3d-status-indicator.captured {
+	background: #46b450;
+	animation: pulse 1s ease-in-out;
+}
+
+.wp3d-status-indicator.modified {
+	background: #ffb900;
+	animation: pulse 1s ease-in-out infinite;
+}
+
+.wp3d-status-indicator.error {
+	background: var(--wp3d-danger);
+}
+
+@keyframes pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.6; }
+}
+
+/* Camera position input styling */
+
+#wp3d_camera_orbit {
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	font-size: 12px;
+	background: #f9f9f9;
+	border-color: #e5e5e5;
+	color: #666666;
+}
+
+/* Zoom level (field of view) styling */
+
+.wp3d-zoom-value {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 50px;
+	padding: 3px 5px;
+	background: #0073aa;
+	color: #ffffff;
+	border-radius: 4px;
+	font-family: Monaco, Consolas, 'Lucida Console', 'Courier New', monospace;
+	font-size: 12px;
+	font-weight: 500;
+	margin-left: 8px;
+}
+
+/* Responsive design for preview */
+
+@media screen and (max-width: 768px) {
+	.wp3d-preview-controls {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 5px;
+	}
+	
+	.wp3d-position-status {
+		margin-left: 0;
+		justify-content: center;
+	}
+	
+	.wp3d-preview-container {
+		padding: 10px;
+	}
+	
+	.wp3d-preview-container model-viewer {
+		height: 300px !important;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.wp3d-preview-section {
+		padding: 10px;
+	}
+	
+	.wp3d-preview-container model-viewer {
+		height: 250px !important;
+	}
+}
+
+/* ==========================================================================
    Metaboxes
    ========================================================================== */
 
